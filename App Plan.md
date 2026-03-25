@@ -36,33 +36,44 @@ Content mapped from [Slide ideas.md](Background/Slide%20ideas.md) and [Rough Dra
 - **1.4** -- Lesson: Body energy sources (food, sleep, water). Game: "Fill the Battery" drag items into a battery bar
 - **1.5** -- Lesson: Focus on food, three categories exist. Game: "Mystery Boxes" tap to guess how many food categories
 
-### Module 2: Carbohydrates (5 nodes)
+### Module 2: The Team (5 nodes)
 
 - **2.1** -- Lesson: Meet carbs, carb-rich foods. Game: "Spot the Carb" tap foods that are mostly carbs
-- **2.2** -- Lesson: Carb digestion. Carbs breakdown into glucose molecule. Glucose is the energy for the cell.
-- **2.3** -- Lesson: How carbs become energy. Insulin is the key. When glucose is in the blood, this signals to the pancreas to secrete the hormone insulin. Insulin opens a portal, allowing glucose in. Cells can use glucose to create energy so they can perform their functions. Game: "Unlock the Cell" drag insulin key to open cell, glucose flows in
-- **2.4** -- Lesson: Fast carbs vs slow carbs. Game: "Speed Sort" sort foods into fast vs slow energy lanes
-- **2.5** -- Lesson: Extra glucose gets stored (glycogen, then fat cells). Game: "Pack the Storage" fill glycogen shelves, overflow goes to vault
+- **2.2** -- Lesson: Meet fats, fat-rich foods. Game: "Find the Fat" tap foods that are mostly fat
+- **2.3** -- Lesson: Meet protein, protein-rich foods. Game: "Protein Hunt" tap foods that are mostly protein
+- **2.4** -- Lesson: What determines a macronutrient? Most foods are a mix, named by dominant macro. Examine the molecules (glucose, amino acids, and lipids). Game: Add the molecules (glucose, lipids, amino acids) to the right food. Example, an apple, and drag and drop glucose molecules to hit target bar. A steak, drag and drop amino acids and lipid molecules to correct target lines.
+- **2.5** --Lesson: Macronutrients work as a team. Game: "Team Power" assemble all three macros to power up the body-phone
 
-### Module 3: Fats (4 nodes)
+### Module 3: Cells (2 nodes)
 
-- **3.1** -- Lesson: Meet fats, fat-rich foods. Game: "Find the Fat" tap foods that are mostly fat
+- **3.1** -- Lesson: What we're made of. Just like foods are composed of tiny molecules, we are composed of tiny cells. Zooming into cells, cell types and jobs. Game: "Where's my cell?" drag and drop correct cell to body organ (neuron to the brain, etc).
+- **3.2** -- Lesson: Cells need energy. In order to perform specific functions, cells need energy. Game: "What's my job?" click on the correct functions of different body systems. Example, "focus" "concentration" for brain, "digestion" for intestines. 
+- **3.3** -- Lesson: How do cells get energy? 
+
+### Module 4 Carbohydrates (5 nodes)
+
+- **4.1**-- Lesson: Quick review of carb rich foods. Game: "Spot the Carb" tap foods that are mostly carbs.
+- **4.2**-- Lesson: Carb digestion. Carbs breakdown into glucose molecule. Glucose is the energy for the cell. (Game sequence: mouth → stomach → small intestine → glucose → bloodstream)
+- **4.3** -- Lesson: How carbs become energy. Insulin is the key. When glucose is in the blood, this signals to the pancreas to secrete the hormone insulin. Insulin opens a portal, allowing glucose in. Cells can use glucose to create energy so they can perform their functions. Game: "Unlock the Cell" drag insulin key to open cell, glucose flows in
+- **4.4** -- Lesson: Fast carbs vs slow carbs. Game: "Speed Sort" sort foods into fast vs slow energy lanes
+- **4.5** -- Lesson: Extra glucose gets stored (glycogen, then fat cells). Game: "Pack the Storage" fill glycogen shelves, overflow goes to vault. but more on this later. [This will be covered in a later section looking at energy usage and storage].
+
+### Module 5: Fats (5 nodes)
+
+- **3.1** -- Lesson: Review of fat-rich foods. Game: "Find the Fat" tap foods that are mostly fat.
 - **3.2** -- Lesson: Why we need fats (cells, hormones, brain, skin). Game: "Build the Cell" drag fat molecules to form a cell membrane
 - **3.3** -- Lesson: Fat digestion (bile, enzymes, absorption). Game: "Digestion Journey" put digestion steps in correct order
-- **3.4** -- Lesson: Essential fats and where to find them. Game: "Brain Boost" drag essential-fat foods to light up a brain
+- **3.4** -- Lesson: Fats for energy. The body uses fat as a slow energy source. Once it has what it needs, it saves the rest for later. (Game: Sort/Categories: quick need for energy = choose carbs, slow/longer duration need for energy = choose fat.)
+- **3.5**-- Lesson: Essential fats and where to find them. Game: "Brain Boost" drag essential-fat foods to light up a brain
 
-### Module 4: Protein (4 nodes)
+### Module 6: Protein (4 nodes)
 
-- **4.1** -- Lesson: Meet protein, protein-rich foods. Game: "Protein Hunt" tap foods that are mostly protein
+- **4.1** -- Lesson: Review protein rich sources.  Game: "Protein Hunt" tap foods that are mostly protein
 - **4.2** -- Lesson: Protein = building blocks (muscles, organs, immune system). Game: "Build and Repair" use amino acid blocks to repair muscle / build antibodies
-- **4.3** -- Lesson: Protein digestion. Protein is broken down into amino acids (first amino acid chains).
+- **4.3** -- Lesson: Protein digestion. Protein is broken down into amino acids (first amino acid chains). Game: "Digestion Journey" put digestion steps in correct order
 - **4.4** -- Lesson: Protein is not stored, body uses it right away. Game: "Use It or Lose It" assign protein to body jobs before time runs out
 
-### Module 5: The Team (3 nodes)
-
-- **5.1** -- Lesson: Macronutrients work as a team. Game: "Team Power" assemble all three macros to power up the body-phone
-- **5.2** -- Lesson: Most foods are a mix, named by dominant macro. Examine the molecules (glucose, amino acids, and lipids). Game: Add the molecules (glucose, lipids, amino acids) to the right food. Example, an apple, and drag and drop glucose molecules to hit target bar. A steak, drag and drop amino acids and lipid molecules to correct target lines.
-- **5.3** -- Game: "Feed Your Avatar" drag foods to your avatar to hit macro target bars
+- **4.5**-- Lesson: All three macronutrients are essential to optimal function! Game: "Feed Your Avatar" drag foods to your avatar to hit macro target bars
 
 ---
 
@@ -202,3 +213,4 @@ nutrition-app/
 - **App name**: "NutriPhone" is a working title. Do you have a preferred name?
 - **Voiceover**: Text-only for MVP, or do you want narration on lessons?
 - **Offline support**: Full offline capability from day one, or online-only for MVP?
+
