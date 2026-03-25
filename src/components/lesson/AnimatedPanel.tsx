@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import PanelIllustration from "./PanelIllustration";
 
 export interface AnimatedPanelProps {
   panel: { id: string; text: string; illustration: string };
@@ -15,14 +16,10 @@ export default function AnimatedPanel({ panel, direction }: AnimatedPanelProps) 
       exit={{ x: -300 * direction, opacity: 0 }}
       transition={{ type: "spring", damping: 25, stiffness: 200 }}
     >
-      <div className="flex h-[60%] min-h-0 shrink-0 flex-col items-center justify-center rounded-t-3xl bg-primary-light/30 px-4 py-6">
-        <div className="flex h-full w-full max-w-lg items-center justify-center rounded-2xl bg-primary-light/50 px-3 py-4">
-          <p className="text-center font-body text-sm leading-snug text-text-muted break-words">
-            {panel.illustration}
-          </p>
-        </div>
+      <div className="flex h-[55%] min-h-0 shrink-0 items-center justify-center overflow-hidden rounded-t-3xl px-3 py-3">
+        <PanelIllustration name={panel.illustration} />
       </div>
-      <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 py-6">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 py-5">
         <p className="text-center font-body text-lg leading-relaxed text-text sm:text-xl">
           {panel.text}
         </p>
