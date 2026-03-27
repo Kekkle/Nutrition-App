@@ -57,12 +57,25 @@ export interface SnakeConfig {
   obstacles: { x: number; y: number; w: number; h: number }[];
 }
 
+export interface SnakeCollectConfig {
+  type: "snake-collect";
+  prompt: string;
+  gridWidth: number;
+  gridHeight: number;
+  startPos: { x: number; y: number };
+  goodItems: string[];
+  badItems: string[];
+  totalSpawns: number;
+  obstacles?: { x: number; y: number; w: number; h: number }[];
+}
+
 export type GameConfig =
   | MultipleChoiceConfig
   | DragDropConfig
   | SortConfig
   | SequenceConfig
-  | SnakeConfig;
+  | SnakeConfig
+  | SnakeCollectConfig;
 
 export interface LessonNode {
   id: string;

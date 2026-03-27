@@ -46,32 +46,6 @@ function EmojiIcon({ emoji, size = "text-6xl", delay = 0 }: { emoji: string; siz
   );
 }
 
-function DigestiveTractSvg() {
-  return (
-    <svg
-      viewBox="0 0 200 240"
-      className="mx-auto h-52 w-44 max-w-full shrink-0"
-      aria-hidden
-    >
-      <path
-        d="M100 18 C 140 38, 155 78, 130 110 C 105 142, 70 150, 55 175 C 40 200, 55 228, 95 218 C 130 210, 150 185, 135 155 C 120 125, 85 118, 75 88 C 65 58, 85 28, 100 18 Z"
-        fill="none"
-        stroke="#E11D48"
-        strokeWidth="10"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M100 40 Q 125 65, 118 95 Q 110 125, 85 145 Q 60 168, 78 195"
-        fill="none"
-        stroke="#FB7185"
-        strokeWidth="6"
-        strokeLinecap="round"
-        opacity={0.85}
-      />
-    </svg>
-  );
-}
 
 function MysteryBoxesInteractive() {
   const [revealed, setRevealed] = useState([false, false, false]);
@@ -333,10 +307,10 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
     <SceneWrapper bg="bg-primary-light/25">
       <div className="relative flex flex-col items-center gap-4">
         <motion.div {...floatVariant}>
-          <span className="text-9xl select-none">🧍</span>
+          <img src="/images/body-outline.png" alt="Body" className="h-36 w-auto drop-shadow-lg sm:h-44" />
         </motion.div>
         <div className="flex flex-wrap justify-center gap-3">
-          {["🧠", "❤️", "🫁", "🍲"].map((e, i) => (
+          {["🧠", "❤️", "🫁", "stomach", "🦴", "💪"].map((e, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, scale: 0.5 }}
@@ -344,7 +318,11 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
               transition={{ delay: 0.12 * i, type: "spring", stiffness: 260, damping: 18 }}
             >
               <BeveledIcon className="p-2">
-                <span className="text-5xl select-none">{e}</span>
+                {e === "stomach" ? (
+                  <img src="/images/stomach.png" alt="Stomach" className="h-10 w-10 object-contain" />
+                ) : (
+                  <span className="text-4xl select-none">{e}</span>
+                )}
               </BeveledIcon>
             </motion.div>
           ))}
@@ -399,14 +377,15 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
     </SceneWrapper>
   ),
 
-  "digestive-tract-icon": () => (
+  "stomach-icon-large": () => (
     <SceneWrapper bg="bg-error/5">
       <motion.div
-        initial={{ opacity: 0, scale: 0.92 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" as const }}
+        animate={{ scale: [1, 1.05, 1] }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" as const }}
       >
-        <DigestiveTractSvg />
+        <BeveledIcon className="p-3">
+          <img src="/images/stomach.png" alt="Stomach" className="h-28 w-28 object-contain sm:h-36 sm:w-36" />
+        </BeveledIcon>
       </motion.div>
     </SceneWrapper>
   ),
@@ -431,38 +410,37 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
     <SceneWrapper bg="bg-primary-light/20">
       <div className="flex items-center justify-center gap-4">
         <BeveledIcon className="p-2">
-          <span className="text-8xl select-none">🌡️</span>
+          <span className="text-8xl select-none">🤚</span>
         </BeveledIcon>
         <BeveledIcon className="p-2">
-          <span className="text-8xl select-none">🛡️</span>
+          <span className="text-8xl select-none">🌡️</span>
         </BeveledIcon>
       </div>
     </SceneWrapper>
   ),
 
   "all-systems-running": () => {
-    const orbit = ["🧠", "❤️", "🫁", "💪", "🦴", "🛡️"];
+    const orbit = ["🧠", "❤️", "🫁", "💪", "🦴", "stomach"];
     const radiusPx = 92;
     return (
       <SceneWrapper bg="bg-primary-light/25">
         <div className="relative mx-auto h-56 w-56 shrink-0 sm:h-64 sm:w-64">
           <div className="absolute inset-0 flex items-center justify-center">
-            <motion.span
-              className="text-8xl select-none sm:text-9xl"
+            <motion.div
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 16 }}
             >
-              <motion.span
+              <motion.div
                 className="inline-block"
                 animate={{ scale: [1, 1.06, 1] }}
                 transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" as const }}
               >
-                🧍
-              </motion.span>
-            </motion.span>
+                <img src="/images/body-energized.png" alt="Body energized" className="h-28 w-auto sm:h-32" />
+              </motion.div>
+            </motion.div>
           </div>
-          {orbit.map((emoji, i) => {
+          {orbit.map((item, i) => {
             const n = orbit.length;
             const angleDeg = (360 / n) * i - 90;
             const rad = (angleDeg * Math.PI) / 180;
@@ -483,7 +461,11 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
                 }}
               >
                 <BeveledIcon className="p-1.5">
-                  <span className="text-3xl select-none sm:text-4xl">{emoji}</span>
+                  {item === "stomach" ? (
+                    <img src="/images/stomach.png" alt="Stomach" className="h-8 w-8 object-contain sm:h-9 sm:w-9" />
+                  ) : (
+                    <span className="text-3xl select-none sm:text-4xl">{item}</span>
+                  )}
                 </BeveledIcon>
               </motion.div>
             );
@@ -493,23 +475,37 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
     );
   },
 
-  "body-outline-with-battery-meter-empty": () => (
-    <SceneWrapper bg="bg-error/10">
-      <motion.div {...floatVariant}>
-        <BeveledIcon>
-          <span className="text-9xl select-none">🧍</span>
-        </BeveledIcon>
-      </motion.div>
-      <div className="flex items-center gap-2">
-        <BeveledIcon className="p-2">
-          <span className="text-4xl select-none">🔋</span>
-        </BeveledIcon>
-        <div className="h-7 w-36 overflow-hidden rounded-full border-2 border-error/40 bg-gray-200">
-          <motion.div
-            className="h-full rounded-full bg-error"
-            animate={{ width: ["8%", "12%", "8%"] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" as const }}
-          />
+  "three-batteries-overview": () => (
+    <SceneWrapper bg="bg-primary-light/20">
+      <div className="flex flex-col items-center gap-4">
+        <motion.div {...floatVariant}>
+          <img src="/images/figure-standing.png" alt="Body" className="h-32 w-auto drop-shadow-lg sm:h-40" />
+        </motion.div>
+        <div className="flex gap-4">
+          {[
+            { label: "Food", icon: "🍎", color: "bg-success", fill: "65%" },
+            { label: "Sleep", icon: "😴", color: "bg-primary", fill: "40%" },
+            { label: "Hydration", icon: "💧", color: "bg-secondary", fill: "50%" },
+          ].map((b, i) => (
+            <motion.div
+              key={i}
+              className="flex flex-col items-center gap-1"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.15, type: "spring", stiffness: 220, damping: 18 }}
+            >
+              <span className="text-2xl select-none">{b.icon}</span>
+              <div className="h-5 w-14 overflow-hidden rounded-full border-2 border-text/15 bg-gray-200">
+                <motion.div
+                  className={`h-full rounded-full ${b.color}`}
+                  initial={{ width: "5%" }}
+                  animate={{ width: b.fill }}
+                  transition={{ duration: 1.2, delay: 0.3 + i * 0.15, ease: "easeOut" as const }}
+                />
+              </div>
+              <span className="font-body text-[10px] font-semibold text-text-muted">{b.label}</span>
+            </motion.div>
+          ))}
         </div>
       </div>
     </SceneWrapper>
@@ -534,27 +530,13 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
     </SceneWrapper>
   ),
 
-  "water-glass-body-hydration-flow-arrows": () => (
+  "water-hydration-simple": () => (
     <SceneWrapper bg="bg-secondary/10">
-      <div className="flex flex-col items-center gap-2">
-        <motion.div {...floatVariant}>
-          <BeveledIcon>
-            <span className="text-9xl select-none">💧</span>
-          </BeveledIcon>
-        </motion.div>
-        <div className="flex gap-2 select-none" aria-hidden>
-          {["⬇️", "⬇️", "⬇️"].map((a, i) => (
-            <motion.span
-              key={i}
-              className="text-3xl"
-              animate={{ y: [0, 4, 0], opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" as const }}
-            >
-              {a}
-            </motion.span>
-          ))}
-        </div>
-      </div>
+      <motion.div {...floatVariant}>
+        <BeveledIcon>
+          <span className="text-9xl select-none">💧</span>
+        </BeveledIcon>
+      </motion.div>
     </SceneWrapper>
   ),
 

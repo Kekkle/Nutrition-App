@@ -72,6 +72,8 @@ function PathSegment({
 const NODE_IMAGES: Record<string, string> = {
   "m1-n1": "/images/celly-character.png",
   "m1-n2": "/images/charger-character.png",
+  "m1-n3": "/images/body-outline.png",
+  "m1-n4": "/images/banana-sunglasses.png",
 };
 
 function nodeEmoji(node: LessonNode): string {

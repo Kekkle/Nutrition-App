@@ -38,16 +38,27 @@ function AppStyleCard({ item, isDragging }: { item: GameItem; isDragging: boolea
       className={`touch-none ${isDragging ? "opacity-30" : "opacity-100"}`}
     >
       <div className={`flex cursor-grab items-center justify-center p-2 ${beveledBox} active:cursor-grabbing`}>
-        <span className="text-4xl leading-none select-none" aria-hidden>{item.icon}</span>
+        {item.icon.endsWith(".png") ? (
+          <img src={`/images/${item.icon}`} alt={item.label} className="h-9 w-9 object-contain" />
+        ) : (
+          <span className="text-4xl leading-none select-none" aria-hidden>{item.icon}</span>
+        )}
       </div>
     </div>
   );
 }
 
+function ItemIcon({ icon, label, size = "text-3xl", imgClass = "h-8 w-8" }: { icon: string; label: string; size?: string; imgClass?: string }) {
+  if (icon.endsWith(".png")) {
+    return <img src={`/images/${icon}`} alt={label} className={`${imgClass} object-contain`} />;
+  }
+  return <span className={`${size} leading-none select-none`} aria-hidden>{icon}</span>;
+}
+
 function OverlayCard({ item }: { item: GameItem }) {
   return (
     <div className={`flex items-center justify-center p-2.5 ${beveledBox} border-2 border-primary shadow-[6px_6px_0_rgba(108,92,231,0.25)]`}>
-      <span className="text-3xl leading-none select-none" aria-hidden>{item.icon}</span>
+      <ItemIcon icon={item.icon} label={item.label} />
     </div>
   );
 }
@@ -61,7 +72,7 @@ function PlacedChip({ item }: { item: GameItem }) {
       transition={{ type: "spring", stiffness: 500, damping: 28 }}
       className={`flex items-center justify-center p-1.5 ${beveledBox} border-2 border-success/60`}
     >
-      <span className="text-xl leading-none select-none" aria-hidden>{item.icon}</span>
+      <ItemIcon icon={item.icon} label={item.label} size="text-xl" imgClass="h-5 w-5" />
     </motion.div>
   );
 }
@@ -104,49 +115,18 @@ function DropZone({
   );
 }
 
-/* ── Body outline SVG for the body-map layout ── */
-function BodyOutlineSvg() {
-  return (
-    <svg viewBox="0 0 160 320" className="h-full w-full" aria-hidden>
-      {/* head */}
-      <circle cx="80" cy="40" r="28" fill="none" stroke="#6C5CE7" strokeWidth="3" opacity={0.5} />
-      {/* neck */}
-      <line x1="80" y1="68" x2="80" y2="85" stroke="#6C5CE7" strokeWidth="3" opacity={0.4} />
-      {/* torso */}
-      <rect x="45" y="85" width="70" height="95" rx="12" fill="none" stroke="#6C5CE7" strokeWidth="3" opacity={0.4} />
-      {/* left arm */}
-      <line x1="45" y1="100" x2="15" y2="165" stroke="#6C5CE7" strokeWidth="3" opacity={0.4} />
-      {/* right arm */}
-      <line x1="115" y1="100" x2="145" y2="165" stroke="#6C5CE7" strokeWidth="3" opacity={0.4} />
-      {/* left leg */}
-      <line x1="60" y1="180" x2="50" y2="280" stroke="#6C5CE7" strokeWidth="3" opacity={0.4} />
-      {/* right leg */}
-      <line x1="100" y1="180" x2="110" y2="280" stroke="#6C5CE7" strokeWidth="3" opacity={0.4} />
-      {/* left foot */}
-      <ellipse cx="48" cy="288" rx="12" ry="8" fill="none" stroke="#6C5CE7" strokeWidth="2.5" opacity={0.35} />
-      {/* right foot */}
-      <ellipse cx="112" cy="288" rx="12" ry="8" fill="none" stroke="#6C5CE7" strokeWidth="2.5" opacity={0.35} />
-      {/* left hand */}
-      <circle cx="12" cy="170" r="7" fill="none" stroke="#6C5CE7" strokeWidth="2.5" opacity={0.35} />
-      {/* right hand */}
-      <circle cx="148" cy="170" r="7" fill="none" stroke="#6C5CE7" strokeWidth="2.5" opacity={0.35} />
-    </svg>
-  );
-}
 
 const BODY_ZONE_POSITIONS: Record<string, { top: string; left: string }> = {
-  head:         { top: "2%",  left: "50%" },
-  "chest-left": { top: "30%", left: "28%" },
-  "chest-right":{ top: "30%", left: "72%" },
-  arms:         { top: "42%", left: "8%" },
-  belly:        { top: "48%", left: "50%" },
-  legs:         { top: "72%", left: "50%" },
-  outer:        { top: "55%", left: "92%" },
+  head:       { top: "10%",  left: "52%" },
+  chest:      { top: "38%",  left: "52%" },
+  "left-arm": { top: "35%",  left: "8%" },
+  "right-arm":{ top: "35%",  left: "95%" },
+  "left-leg": { top: "78%",  left: "35%" },
+  "right-leg":{ top: "78%",  left: "68%" },
 };
 
 function BodyDropZone({
   id,
-  icon,
   isHighlighted,
   children,
 }: {
@@ -158,6 +138,7 @@ function BodyDropZone({
 }) {
   const { isOver, setNodeRef } = useDroppable({ id });
   const active = isOver || isHighlighted;
+  const hasContent = children && (children as React.ReactElement[])?.length > 0;
   const pos = BODY_ZONE_POSITIONS[id] ?? { top: "50%", left: "50%" };
 
   return (
@@ -167,17 +148,17 @@ function BodyDropZone({
       style={{ top: pos.top, left: pos.left }}
     >
       <div
-        className={`flex min-h-[52px] min-w-[52px] flex-col items-center justify-center rounded-2xl border-[3px] border-dashed p-1.5 transition-all duration-200 ${
+        className={`flex min-h-[48px] min-w-[48px] flex-col items-center justify-center rounded-2xl border-[3px] border-dashed p-1.5 transition-all duration-200 ${
           active
             ? "border-primary bg-primary-light/40 shadow-[0_0_16px_rgba(108,92,231,0.4)] scale-110"
-            : "border-primary/25 bg-surface-raised/70"
+            : hasContent
+              ? "border-success/40 bg-success/10"
+              : "border-transparent bg-transparent"
         }`}
       >
-        {children && (children as React.ReactElement[])?.length > 0 ? (
+        {hasContent ? (
           children
-        ) : (
-          <span className="text-lg opacity-50" aria-hidden>{icon}</span>
-        )}
+        ) : null}
       </div>
     </div>
   );
@@ -225,7 +206,12 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
       if (placements[itemId] !== undefined) return;
       const targetId = String(over.id);
       const expected = config.correctMapping[itemId];
-      if (expected === targetId) {
+      const limbTargets = ["left-arm", "right-arm", "left-leg", "right-leg"];
+      const isCorrect =
+        expected === targetId ||
+        expected === "*" ||
+        (expected === "*limbs" && limbTargets.includes(targetId));
+      if (isCorrect) {
         setPlacements((p) => ({ ...p, [itemId]: targetId }));
       } else {
         setMistakes((m) => m + 1);
@@ -368,8 +354,8 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
 
         {layout === "body-map" && (
           <div className="flex flex-1 flex-col gap-4 lg:flex-row lg:items-start">
-            <div className="relative mx-auto aspect-[1/2] w-48 shrink-0 sm:w-56">
-              <BodyOutlineSvg />
+            <div className="relative mx-auto aspect-[1/1.4] w-60 shrink-0 sm:w-72">
+              <img src="/images/body-outline.png" alt="Body outline" className="h-full w-full object-contain opacity-50" />
               {config.targets.map((target) => {
                 const placedHere = config.items.filter((it) => placements[it.id] === target.id);
                 return (
@@ -387,7 +373,7 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
                 );
               })}
             </div>
-            <div className="mt-auto lg:mt-0 lg:flex-1">
+            <div className="mt-2 lg:mt-0 lg:flex-1">
               <p className="mb-2 text-center font-body text-xs font-semibold text-text-muted">
                 Drag each part
               </p>
