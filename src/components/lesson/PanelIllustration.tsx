@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useState, type ReactNode } from "react";
 
 const floatVariant = {
   animate: {
@@ -14,6 +15,23 @@ const pulseVariant = {
   },
 };
 
+const beveledBoxClass =
+  "rounded-2xl bg-gradient-to-br from-white/40 to-black/10 p-3 shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.1),0_4px_8px_rgba(0,0,0,0.15)]";
+
+function BeveledIcon({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={`flex items-center justify-center ${beveledBoxClass} ${className}`.trim()}>{children}</div>
+  );
+}
+
+function SceneWrapper({ bg, children }: { bg: string; children: ReactNode }) {
+  return (
+    <div className={`flex h-full w-full flex-col items-center justify-center gap-4 rounded-2xl ${bg} px-4 py-6`}>
+      {children}
+    </div>
+  );
+}
+
 function EmojiIcon({ emoji, size = "text-6xl", delay = 0 }: { emoji: string; size?: string; delay?: number }) {
   return (
     <motion.span
@@ -28,151 +46,268 @@ function EmojiIcon({ emoji, size = "text-6xl", delay = 0 }: { emoji: string; siz
   );
 }
 
-function EmojiRow({ emojis, size = "text-5xl" }: { emojis: string[]; size?: string }) {
+function DigestiveTractSvg() {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-3">
-      {emojis.map((e, i) => (
-        <EmojiIcon key={i} emoji={e} size={size} delay={i * 0.08} />
-      ))}
-    </div>
+    <svg
+      viewBox="0 0 200 240"
+      className="mx-auto h-52 w-44 max-w-full shrink-0"
+      aria-hidden
+    >
+      <path
+        d="M100 18 C 140 38, 155 78, 130 110 C 105 142, 70 150, 55 175 C 40 200, 55 228, 95 218 C 130 210, 150 185, 135 155 C 120 125, 85 118, 75 88 C 65 58, 85 28, 100 18 Z"
+        fill="none"
+        stroke="#E11D48"
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M100 40 Q 125 65, 118 95 Q 110 125, 85 145 Q 60 168, 78 195"
+        fill="none"
+        stroke="#FB7185"
+        strokeWidth="6"
+        strokeLinecap="round"
+        opacity={0.85}
+      />
+    </svg>
   );
 }
 
-function SceneWrapper({ bg, children }: { bg: string; children: React.ReactNode }) {
+function MysteryBoxesInteractive() {
+  const [revealed, setRevealed] = useState([false, false, false]);
+  const contents = ["🍞", "🍗", "🧈"];
+
+  const reveal = (index: number) => {
+    setRevealed((prev) => {
+      if (prev[index]) return prev;
+      const next = [...prev];
+      next[index] = true;
+      return next;
+    });
+  };
+
   return (
-    <div className={`flex h-full w-full flex-col items-center justify-center gap-4 rounded-2xl ${bg} px-4 py-6`}>
-      {children}
-    </div>
+    <SceneWrapper bg="bg-primary/10">
+      <div className="flex items-center justify-center gap-4" style={{ perspective: 1000 }}>
+        {[0, 1, 2].map((i) => (
+          <motion.div
+            key={i}
+            className="h-24 w-24"
+            animate={revealed[i] ? { y: 0 } : { y: [0, -8, 0] }}
+            transition={
+              revealed[i]
+                ? { duration: 0.2 }
+                : { duration: 1.4, repeat: Infinity, ease: "easeInOut" as const }
+            }
+          >
+            <motion.button
+              type="button"
+              onClick={() => reveal(i)}
+              className="relative h-full w-full cursor-pointer border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              aria-label={revealed[i] ? "Revealed" : "Mystery box"}
+              style={{ transformStyle: "preserve-3d", perspective: 800 }}
+            >
+              <motion.div
+                className="relative h-full w-full"
+                style={{ transformStyle: "preserve-3d" }}
+                animate={{ rotateY: revealed[i] ? 180 : 0 }}
+                transition={{ duration: 0.55, ease: "easeInOut" as const }}
+              >
+                <div
+                  className={`absolute inset-0 flex items-center justify-center ${beveledBoxClass}`}
+                  style={{
+                    backfaceVisibility: "hidden",
+                    WebkitBackfaceVisibility: "hidden",
+                    transform: "rotateY(0deg)",
+                  }}
+                >
+                  <span className="font-display text-4xl text-primary">?</span>
+                </div>
+                <div
+                  className={`absolute inset-0 flex items-center justify-center ${beveledBoxClass}`}
+                  style={{
+                    backfaceVisibility: "hidden",
+                    WebkitBackfaceVisibility: "hidden",
+                    transform: "rotateY(180deg)",
+                  }}
+                >
+                  <span className="text-5xl select-none">{contents[i]}</span>
+                </div>
+              </motion.div>
+            </motion.button>
+          </motion.div>
+        ))}
+      </div>
+    </SceneWrapper>
   );
 }
 
-const ILLUSTRATIONS: Record<string, () => React.ReactNode> = {
+const ILLUSTRATIONS: Record<string, () => ReactNode> = {
   "phone-with-colorful-app-icons": () => (
     <SceneWrapper bg="bg-primary-light/40">
-      <motion.div {...floatVariant} className="text-8xl">📱</motion.div>
-      <EmojiRow emojis={["📞", "📷", "🎮", "💬", "🎵", "📸"]} size="text-4xl" />
+      <div className="flex w-full max-w-xl flex-row flex-wrap items-center justify-center gap-6">
+        <motion.div {...floatVariant}>
+          <img src="/images/celly-character.png" alt="Celly" className="h-40 w-auto drop-shadow-lg sm:h-48" />
+        </motion.div>
+        <div className="grid grid-cols-3 gap-1.5">
+          {["📞", "📷", "💬", "🕐", "🗺️", "📅", "🎵", "🎮", "🛍️", "▶️"].map((e, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: idx * 0.04, type: "spring", stiffness: 260, damping: 20 }}
+            >
+              <BeveledIcon className="p-1.5">
+                <span className="text-4xl select-none">{e}</span>
+              </BeveledIcon>
+            </motion.div>
+          ))}
+        </div>
+      </div>
     </SceneWrapper>
   ),
 
   "phone-screen-essential-apps-row": () => (
-    <SceneWrapper bg="bg-success/15">
-      <p className="font-display text-lg text-success">Essential</p>
-      <EmojiRow emojis={["📞", "📷", "💬"]} size="text-6xl" />
-      <p className="font-body text-sm text-text-muted">You need these every day</p>
+    <SceneWrapper bg="bg-success/20">
+      <div className="grid max-w-sm grid-cols-3 gap-3">
+        {["📞", "📷", "💬", "🕐", "🗺️", "📅"].map((e, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.07, ease: "easeOut" as const }}
+          >
+            <BeveledIcon className="p-2">
+              <span className="text-5xl select-none">{e}</span>
+            </BeveledIcon>
+          </motion.div>
+        ))}
+      </div>
     </SceneWrapper>
   ),
 
   "phone-screen-fun-apps-row": () => (
-    <SceneWrapper bg="bg-accent/15">
-      <p className="font-display text-lg text-accent">Fun</p>
-      <EmojiRow emojis={["🎮", "📸", "🎵"]} size="text-6xl" />
-      <p className="font-body text-sm text-text-muted">Nice to have, but not necessary</p>
+    <SceneWrapper bg="bg-accent/25">
+      <div className="flex max-w-md flex-wrap items-center justify-center gap-3">
+        {["🎵", "🎮", "🛍️", "▶️"].map((e, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: idx * 0.08, type: "spring", stiffness: 280, damping: 22 }}
+          >
+            <BeveledIcon className="p-2">
+              <span className="text-5xl select-none">{e}</span>
+            </BeveledIcon>
+          </motion.div>
+        ))}
+      </div>
     </SceneWrapper>
   ),
 
   "phone-multitasking-many-app-windows": () => (
     <SceneWrapper bg="bg-primary-light/30">
-      <div className="grid grid-cols-3 gap-2">
-        {["📞", "📷", "🎮", "💬", "🎵", "📸", "🗺️", "📧", "🛒"].map((e, i) => (
+      <div className="grid max-w-xs grid-cols-3 gap-2">
+        {["📞", "📷", "🎮", "💬", "🎵", "🗺️", "📧", "🛒"].map((e, i) => (
           <motion.div
             key={i}
-            className="flex h-14 w-14 items-center justify-center rounded-xl bg-surface-raised shadow-sm"
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: i * 0.06 }}
+            transition={{ delay: i * 0.05, ease: "easeOut" as const }}
           >
-            <span className="text-2xl">{e}</span>
+            <BeveledIcon className="p-1.5">
+              <span className="text-3xl select-none">{e}</span>
+            </BeveledIcon>
           </motion.div>
         ))}
       </div>
-      <p className="font-body text-sm text-text-muted">All running at once!</p>
     </SceneWrapper>
   ),
 
   "split-phone-and-silhouette-body-transition": () => (
     <SceneWrapper bg="bg-secondary/10">
-      <div className="flex items-center gap-6">
-        <motion.span className="text-7xl" {...floatVariant}>📱</motion.span>
+      <div className="flex w-full max-w-md items-center justify-center">
+        <div className="flex flex-1 justify-end">
+          <motion.div {...floatVariant}>
+            <img src="/images/celly-character.png" alt="Celly" className="h-32 w-auto drop-shadow-lg sm:h-40" />
+          </motion.div>
+        </div>
         <motion.span
-          className="font-display text-3xl text-primary"
-          animate={{ opacity: [0.3, 1, 0.3] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+          className="mx-4 font-display text-4xl text-primary select-none sm:mx-6"
+          animate={{ opacity: [0.35, 1, 0.35] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" as const }}
         >
           =
         </motion.span>
-        <motion.span className="text-7xl" {...floatVariant}>🧍</motion.span>
-      </div>
-    </SceneWrapper>
-  ),
-
-  "two-buckets-essential-vs-fun-labels": () => (
-    <SceneWrapper bg="bg-warning/10">
-      <p className="font-display text-lg text-text">Time to sort!</p>
-      <div className="flex gap-6">
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-5xl">⭐</span>
-          <span className="font-body text-sm font-semibold text-success">Essential</span>
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-5xl">🎉</span>
-          <span className="font-body text-sm font-semibold text-accent">Fun</span>
+        <div className="flex flex-1 justify-start">
+          <motion.div {...floatVariant}>
+            <img src="/images/body-outline.png" alt="Body" className="h-32 w-auto drop-shadow-lg sm:h-40" />
+          </motion.div>
         </div>
       </div>
     </SceneWrapper>
   ),
 
-  // --- Node 1.2: Charge the phone ---
   "phone-battery-icon-almost-empty": () => (
     <SceneWrapper bg="bg-error/10">
-      <motion.div {...pulseVariant} className="text-8xl">📱</motion.div>
+      <motion.div {...pulseVariant}>
+        <BeveledIcon>
+          <span className="text-9xl select-none">📱</span>
+        </BeveledIcon>
+      </motion.div>
       <div className="flex items-center gap-2">
-        <span className="text-4xl">🪫</span>
-        <div className="h-6 w-32 overflow-hidden rounded-full border-2 border-error/40 bg-gray-200">
+        <BeveledIcon className="p-2">
+          <span className="text-4xl select-none">🪫</span>
+        </BeveledIcon>
+        <div className="h-7 w-36 overflow-hidden rounded-full border-2 border-error/40 bg-gray-200">
           <motion.div
             className="h-full rounded-full bg-error"
             initial={{ width: "5%" }}
             animate={{ width: ["5%", "8%", "5%"] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" as const }}
           />
         </div>
       </div>
-      <p className="font-body text-sm font-semibold text-error">Almost empty!</p>
-    </SceneWrapper>
-  ),
-
-  "dark-phone-screen-power-off": () => (
-    <SceneWrapper bg="bg-gray-800">
-      <motion.div
-        className="text-8xl opacity-30 grayscale"
-        animate={{ opacity: [0.3, 0.15, 0.3] }}
-        transition={{ duration: 3, repeat: Infinity }}
-      >
-        📱
-      </motion.div>
-      <p className="font-body text-sm text-gray-400">Nothing works...</p>
     </SceneWrapper>
   ),
 
   "charging-cable-plugged-into-phone": () => (
     <SceneWrapper bg="bg-success/10">
       <div className="flex items-end gap-1">
-        <motion.span className="text-7xl" {...floatVariant}>📱</motion.span>
-        <motion.span
-          className="text-5xl"
+        <motion.div {...floatVariant}>
+          <BeveledIcon>
+            <span className="text-9xl select-none leading-none">📱</span>
+          </BeveledIcon>
+        </motion.div>
+        <motion.div
+          className="mb-2"
           animate={{ x: [4, 0, 4] }}
-          transition={{ duration: 1, repeat: Infinity }}
+          transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" as const }}
         >
-          🔌
-        </motion.span>
+          <BeveledIcon className="p-2">
+            <span className="text-5xl select-none">🔌</span>
+          </BeveledIcon>
+        </motion.div>
       </div>
-      <p className="font-body text-sm text-success font-semibold">Charging...</p>
     </SceneWrapper>
   ),
 
   "lightning-bolts-flowing-into-battery-bar": () => (
     <SceneWrapper bg="bg-warning/15">
-      <EmojiRow emojis={["⚡", "⚡", "⚡"]} size="text-5xl" />
-      <div className="h-8 w-40 overflow-hidden rounded-full border-2 border-warning/50 bg-gray-200">
+      <div className="flex justify-center gap-2">
+        {["⚡", "⚡", "⚡"].map((e, i) => (
+          <motion.div
+            key={i}
+            animate={{ opacity: [0.6, 1, 0.6], scale: [1, 1.05, 1] }}
+            transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" as const }}
+          >
+            <BeveledIcon className="p-2">
+              <span className="text-5xl select-none">{e}</span>
+            </BeveledIcon>
+          </motion.div>
+        ))}
+      </div>
+      <div className="h-8 w-44 overflow-hidden rounded-full border-2 border-warning/50 bg-gray-200">
         <motion.div
           className="h-full rounded-full bg-warning"
           initial={{ width: "10%" }}
@@ -180,314 +315,311 @@ const ILLUSTRATIONS: Record<string, () => React.ReactNode> = {
           transition={{ duration: 2, ease: "easeOut" as const }}
         />
       </div>
-      <p className="font-display text-base text-warning">Electricity = power</p>
     </SceneWrapper>
   ),
 
   "phone-screen-bright-apps-active": () => (
-    <SceneWrapper bg="bg-success/15">
-      <motion.div className="text-8xl" {...pulseVariant}>📱</motion.div>
-      <div className="h-6 w-32 overflow-hidden rounded-full border-2 border-success/40 bg-gray-200">
+    <SceneWrapper bg="bg-success/20">
+      <motion.div {...pulseVariant}>
+        <BeveledIcon>
+          <span className="text-9xl select-none">📱</span>
+        </BeveledIcon>
+      </motion.div>
+      <div className="h-7 w-36 overflow-hidden rounded-full border-2 border-success/40 bg-gray-200">
         <div className="h-full w-full rounded-full bg-success" />
       </div>
-      <p className="font-body text-sm font-semibold text-success">Fully charged!</p>
     </SceneWrapper>
   ),
 
-  "thinking-kid-question-mark-phone": () => (
-    <SceneWrapper bg="bg-primary-light/30">
-      <div className="flex items-center gap-4">
-        <motion.span className="text-7xl" {...floatVariant}>🤔</motion.span>
-        <motion.span
-          className="font-display text-6xl text-primary"
-          animate={{ rotate: [0, 10, -10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          ?
-        </motion.span>
+  "body-apps-overview": () => (
+    <SceneWrapper bg="bg-primary-light/25">
+      <div className="relative flex flex-col items-center gap-4">
+        <motion.div {...floatVariant}>
+          <span className="text-9xl select-none">🧍</span>
+        </motion.div>
+        <div className="flex flex-wrap justify-center gap-3">
+          {["🧠", "❤️", "🫁", "🍲"].map((e, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.12 * i, type: "spring", stiffness: 260, damping: 18 }}
+            >
+              <BeveledIcon className="p-2">
+                <span className="text-5xl select-none">{e}</span>
+              </BeveledIcon>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </SceneWrapper>
   ),
 
-  // --- Node 1.3: Build the body ---
-  "cartoon-body-outline-next-to-phone-character": () => (
-    <SceneWrapper bg="bg-secondary/10">
-      <div className="flex items-center gap-6">
-        <motion.span className="text-7xl" {...floatVariant}>📱</motion.span>
-        <motion.span className="font-display text-4xl text-primary">→</motion.span>
-        <motion.span className="text-7xl" {...floatVariant}>🧍</motion.span>
-      </div>
-      <p className="font-body text-sm text-text-muted">Your body works like a phone</p>
-    </SceneWrapper>
-  ),
-
-  "body-outline-brain-glow-head": () => (
+  "brain-icon-large": () => (
     <SceneWrapper bg="bg-primary-light/20">
-      <motion.span className="text-8xl" {...pulseVariant}>🧠</motion.span>
-      <p className="font-display text-lg text-primary">Control center</p>
-      <p className="font-body text-xs text-text-muted">Think, feel, decide</p>
-    </SceneWrapper>
-  ),
-
-  "body-outline-heart-glow-chest-left": () => (
-    <SceneWrapper bg="bg-error/10">
-      <motion.span
-        className="text-8xl"
-        animate={{ scale: [1, 1.15, 1] }}
-        transition={{ duration: 0.8, repeat: Infinity }}
+      <motion.div
+        animate={{
+          boxShadow: [
+            "0 0 0 4px rgba(108, 92, 231, 0.25), 0 12px 28px rgba(108, 92, 231, 0.3)",
+            "0 0 0 14px rgba(108, 92, 231, 0.12), 0 12px 36px rgba(108, 92, 231, 0.45)",
+            "0 0 0 4px rgba(108, 92, 231, 0.25), 0 12px 28px rgba(108, 92, 231, 0.3)",
+          ],
+        }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" as const }}
+        className="rounded-2xl"
       >
-        ❤️
-      </motion.span>
-      <p className="font-display text-lg text-error">Pumps blood</p>
-      <p className="font-body text-xs text-text-muted">Never stops beating</p>
+        <BeveledIcon>
+          <span className="text-9xl select-none">🧠</span>
+        </BeveledIcon>
+      </motion.div>
     </SceneWrapper>
   ),
 
-  "body-outline-lungs-glow-chest": () => (
+  "heart-icon-large": () => (
+    <SceneWrapper bg="bg-error/10">
+      <motion.div
+        animate={{ scale: [1, 1.15, 1] }}
+        transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" as const }}
+      >
+        <BeveledIcon>
+          <span className="text-9xl select-none">❤️</span>
+        </BeveledIcon>
+      </motion.div>
+    </SceneWrapper>
+  ),
+
+  "lungs-icon-large": () => (
     <SceneWrapper bg="bg-secondary/15">
-      <motion.span
-        className="text-8xl"
+      <motion.div
         animate={{ scale: [1, 1.1, 1] }}
         transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" as const }}
       >
-        🫁
-      </motion.span>
-      <p className="font-display text-lg text-secondary">Breathe in, breathe out</p>
+        <BeveledIcon>
+          <span className="text-9xl select-none">🫁</span>
+        </BeveledIcon>
+      </motion.div>
     </SceneWrapper>
   ),
 
-  "body-outline-muscles-arms-and-stomach-belly": () => (
+  "digestive-tract-icon": () => (
+    <SceneWrapper bg="bg-error/5">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" as const }}
+      >
+        <DigestiveTractSvg />
+      </motion.div>
+    </SceneWrapper>
+  ),
+
+  "muscles-icon-large": () => (
     <SceneWrapper bg="bg-carb-light">
-      <div className="flex items-center gap-6">
-        <EmojiIcon emoji="💪" size="text-7xl" />
-        <EmojiIcon emoji="🍲" size="text-7xl" delay={0.15} />
-      </div>
-      <p className="font-display text-base text-text">Move + digest</p>
+      <BeveledIcon>
+        <span className="text-9xl select-none">💪</span>
+      </BeveledIcon>
     </SceneWrapper>
   ),
 
-  "body-outline-with-organs-all-lit-up": () => (
-    <SceneWrapper bg="bg-primary-light/25">
-      <div className="relative">
-        <motion.span className="text-8xl" {...pulseVariant}>🧍</motion.span>
-      </div>
-      <div className="flex flex-wrap justify-center gap-2">
-        {["🧠", "❤️", "🫁", "💪", "🍲"].map((e, i) => (
-          <motion.span
-            key={i}
-            className="text-3xl"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.12 }}
-          >
-            {e}
-          </motion.span>
-        ))}
-      </div>
-      <p className="font-body text-sm font-semibold text-primary">All running right now!</p>
+  "bones-icon-large": () => (
+    <SceneWrapper bg="bg-secondary/10">
+      <BeveledIcon>
+        <span className="text-9xl select-none">🦴</span>
+      </BeveledIcon>
     </SceneWrapper>
   ),
 
-  // --- Node 1.4: Fill the battery ---
+  "skin-icon-large": () => (
+    <SceneWrapper bg="bg-primary-light/20">
+      <div className="flex items-center justify-center gap-4">
+        <BeveledIcon className="p-2">
+          <span className="text-8xl select-none">🌡️</span>
+        </BeveledIcon>
+        <BeveledIcon className="p-2">
+          <span className="text-8xl select-none">🛡️</span>
+        </BeveledIcon>
+      </div>
+    </SceneWrapper>
+  ),
+
+  "all-systems-running": () => {
+    const orbit = ["🧠", "❤️", "🫁", "💪", "🦴", "🛡️"];
+    const radiusPx = 92;
+    return (
+      <SceneWrapper bg="bg-primary-light/25">
+        <div className="relative mx-auto h-56 w-56 shrink-0 sm:h-64 sm:w-64">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <motion.span
+              className="text-8xl select-none sm:text-9xl"
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 16 }}
+            >
+              <motion.span
+                className="inline-block"
+                animate={{ scale: [1, 1.06, 1] }}
+                transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" as const }}
+              >
+                🧍
+              </motion.span>
+            </motion.span>
+          </div>
+          {orbit.map((emoji, i) => {
+            const n = orbit.length;
+            const angleDeg = (360 / n) * i - 90;
+            const rad = (angleDeg * Math.PI) / 180;
+            const x = radiusPx * Math.cos(rad);
+            const y = radiusPx * Math.sin(rad);
+            return (
+              <motion.div
+                key={i}
+                className="absolute left-1/2 top-1/2"
+                style={{ marginLeft: -28, marginTop: -28 }}
+                initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+                animate={{ opacity: 1, scale: 1, x, y }}
+                transition={{
+                  delay: 0.12 + i * 0.1,
+                  type: "spring",
+                  stiffness: 220,
+                  damping: 18,
+                }}
+              >
+                <BeveledIcon className="p-1.5">
+                  <span className="text-3xl select-none sm:text-4xl">{emoji}</span>
+                </BeveledIcon>
+              </motion.div>
+            );
+          })}
+        </div>
+      </SceneWrapper>
+    );
+  },
+
   "body-outline-with-battery-meter-empty": () => (
     <SceneWrapper bg="bg-error/10">
-      <motion.span className="text-7xl" {...floatVariant}>🧍</motion.span>
+      <motion.div {...floatVariant}>
+        <BeveledIcon>
+          <span className="text-9xl select-none">🧍</span>
+        </BeveledIcon>
+      </motion.div>
       <div className="flex items-center gap-2">
-        <span className="text-3xl">🔋</span>
-        <div className="h-6 w-32 overflow-hidden rounded-full border-2 border-error/40 bg-gray-200">
+        <BeveledIcon className="p-2">
+          <span className="text-4xl select-none">🔋</span>
+        </BeveledIcon>
+        <div className="h-7 w-36 overflow-hidden rounded-full border-2 border-error/40 bg-gray-200">
           <motion.div
             className="h-full rounded-full bg-error"
             animate={{ width: ["8%", "12%", "8%"] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" as const }}
           />
         </div>
       </div>
-      <p className="font-body text-sm text-error">Body needs fuel too!</p>
     </SceneWrapper>
   ),
 
   "plate-of-supportive-foods-energy-rays": () => (
     <SceneWrapper bg="bg-carb/10">
-      <motion.div {...pulseVariant}>
-        <EmojiRow emojis={["🍎", "🥦", "🍞", "🥚", "🍗"]} size="text-5xl" />
+      <motion.div {...pulseVariant} className="flex flex-wrap justify-center gap-2">
+        {["🍎", "🥦", "🍞", "🥚", "🍗"].map((e, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.08, type: "spring", stiffness: 280, damping: 20 }}
+          >
+            <BeveledIcon className="p-2">
+              <span className="text-6xl select-none sm:text-7xl">{e}</span>
+            </BeveledIcon>
+          </motion.div>
+        ))}
       </motion.div>
-      <p className="font-display text-lg text-carb">Food = energy</p>
     </SceneWrapper>
   ),
 
   "water-glass-body-hydration-flow-arrows": () => (
     <SceneWrapper bg="bg-secondary/10">
-      <motion.span className="text-8xl" {...floatVariant}>💧</motion.span>
-      <p className="font-display text-base text-secondary">Keeps everything flowing</p>
+      <div className="flex flex-col items-center gap-2">
+        <motion.div {...floatVariant}>
+          <BeveledIcon>
+            <span className="text-9xl select-none">💧</span>
+          </BeveledIcon>
+        </motion.div>
+        <div className="flex gap-2 select-none" aria-hidden>
+          {["⬇️", "⬇️", "⬇️"].map((a, i) => (
+            <motion.span
+              key={i}
+              className="text-3xl"
+              animate={{ y: [0, 4, 0], opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" as const }}
+            >
+              {a}
+            </motion.span>
+          ))}
+        </div>
+      </div>
     </SceneWrapper>
   ),
 
   "moon-pillow-kid-sleeping-cozy": () => (
     <SceneWrapper bg="bg-primary/10">
       <div className="flex items-center gap-4">
-        <EmojiIcon emoji="🌙" size="text-6xl" />
-        <EmojiIcon emoji="😴" size="text-7xl" delay={0.1} />
-        <EmojiIcon emoji="🛏️" size="text-6xl" delay={0.2} />
-      </div>
-      <p className="font-display text-base text-primary">Recovery time</p>
-    </SceneWrapper>
-  ),
-
-  "body-battery-icon-filling-from-three-sources": () => (
-    <SceneWrapper bg="bg-success/10">
-      <div className="flex items-center gap-3">
-        <span className="text-4xl">🍎</span>
-        <span className="text-4xl">💧</span>
-        <span className="text-4xl">😴</span>
-        <span className="font-display text-2xl text-success">→</span>
-        <span className="text-4xl">🔋</span>
-      </div>
-      <div className="h-7 w-40 overflow-hidden rounded-full border-2 border-success/40 bg-gray-200">
-        <motion.div
-          className="h-full rounded-full bg-success"
-          initial={{ width: "0%" }}
-          animate={{ width: "100%" }}
-          transition={{ duration: 2.5, ease: "easeOut" as const }}
-        />
-      </div>
-      <p className="font-body text-sm font-semibold text-success">All three fill your battery</p>
-    </SceneWrapper>
-  ),
-
-  "two-labeled-buckets-powers-vs-does-not": () => (
-    <SceneWrapper bg="bg-warning/10">
-      <p className="font-display text-lg text-text">Sort them!</p>
-      <div className="flex gap-6">
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-5xl">✅</span>
-          <span className="font-body text-sm font-semibold text-success">Powers you</span>
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-5xl">⛔</span>
-          <span className="font-body text-sm font-semibold text-error">Does not</span>
-        </div>
+        <motion.div {...floatVariant}>
+          <BeveledIcon className="p-2">
+            <EmojiIcon emoji="🌙" size="text-7xl" />
+          </BeveledIcon>
+        </motion.div>
+        <BeveledIcon className="p-2">
+          <EmojiIcon emoji="😴" size="text-8xl" delay={0.1} />
+        </BeveledIcon>
+        <motion.div {...floatVariant}>
+          <BeveledIcon className="p-2">
+            <EmojiIcon emoji="🛏️" size="text-7xl" delay={0.2} />
+          </BeveledIcon>
+        </motion.div>
       </div>
     </SceneWrapper>
   ),
 
-  // --- Node 1.5: Mystery boxes ---
-  "kid-eating-balanced-meal-smiling": () => (
+  "food-main-fuel": () => (
     <SceneWrapper bg="bg-carb/10">
-      <div className="flex items-center gap-3">
-        <EmojiIcon emoji="😋" size="text-7xl" />
-        <div className="flex flex-col gap-1">
-          <EmojiRow emojis={["🍎", "🥖", "🍗"]} size="text-4xl" />
-        </div>
-      </div>
-      <p className="font-body text-sm text-text-muted">Food keeps you going</p>
-    </SceneWrapper>
-  ),
-
-  "three-different-foods-side-by-side": () => (
-    <SceneWrapper bg="bg-primary-light/20">
-      <div className="flex items-center gap-6">
-        {[
-          { emoji: "🍎", label: "Apple" },
-          { emoji: "🍞", label: "Bread" },
-          { emoji: "🥛", label: "Yogurt" },
-        ].map((f, i) => (
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        {["🍎", "🥖", "🍗", "🥑"].map((e, i) => (
           <motion.div
             key={i}
-            className="flex flex-col items-center gap-1"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.15 }}
+            transition={{ delay: i * 0.1, type: "spring", stiffness: 260, damping: 20 }}
           >
-            <span className="text-5xl">{f.emoji}</span>
-            <span className="font-body text-xs text-text-muted">{f.label}</span>
+            <BeveledIcon className="p-2">
+              <span className="text-7xl select-none sm:text-8xl">{e}</span>
+            </BeveledIcon>
           </motion.div>
         ))}
       </div>
-      <p className="font-body text-sm text-text-muted">Different foods, different jobs</p>
     </SceneWrapper>
   ),
 
-  "magnifying-glass-over-plate-zoom-to-molecules": () => (
-    <SceneWrapper bg="bg-secondary/10">
-      <div className="relative">
-        <span className="text-7xl">🍽️</span>
-        <motion.span
-          className="absolute -right-4 -top-2 text-5xl"
-          animate={{ rotate: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          🔍
-        </motion.span>
-      </div>
-      <p className="font-body text-sm text-text-muted">What's inside our food?</p>
-    </SceneWrapper>
-  ),
+  "mystery-boxes-clickable": () => <MysteryBoxesInteractive />,
 
-  "three-mystery-boxes-labeled-question-marks": () => (
-    <SceneWrapper bg="bg-primary/10">
-      <div className="flex items-center gap-4">
-        {[0, 1, 2].map((i) => (
-          <motion.div
-            key={i}
-            className="flex h-20 w-20 items-center justify-center rounded-2xl border-4 border-primary/30 bg-primary-light/40 shadow-md"
-            animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.3 }}
-          >
-            <span className="font-display text-3xl text-primary">?</span>
-          </motion.div>
-        ))}
-      </div>
-      <p className="font-display text-base text-primary">Three mystery groups</p>
-    </SceneWrapper>
-  ),
-
-  "purple-mascot-waving-next-to-closed-boxes": () => (
+  "macros-coming-up-next": () => (
     <SceneWrapper bg="bg-primary-light/25">
-      <div className="flex items-center gap-4">
-        <motion.span
-          className="text-7xl"
-          animate={{ rotate: [0, 15, -15, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
-          👋
-        </motion.span>
-        <div className="flex gap-2">
-          {["🟡", "🟢", "🟣"].map((c, i) => (
-            <motion.div
-              key={i}
-              className="flex h-14 w-14 items-center justify-center rounded-xl border-3 border-text/15 bg-surface-raised shadow"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.3 + i * 0.15 }}
-            >
-              <span className="text-2xl">{c}</span>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-      <p className="font-body text-sm text-text-muted">Coming up next!</p>
-    </SceneWrapper>
-  ),
-
-  "quiz-panel-number-options-preview": () => (
-    <SceneWrapper bg="bg-warning/10">
-      <motion.span
-        className="font-display text-5xl text-primary"
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 1.5, repeat: Infinity }}
-      >
-        How many?
-      </motion.span>
-      <div className="flex gap-3">
-        {["2", "3", "5", "10"].map((n, i) => (
+      <div className="flex w-full max-w-lg flex-row flex-wrap items-start justify-center gap-6 sm:gap-10">
+        {[
+          { emoji: "🍞", label: "Carbs", color: "text-carb" },
+          { emoji: "🍗", label: "Protein", color: "text-protein" },
+          { emoji: "🧈", label: "Fats", color: "text-fat" },
+        ].map((col, i) => (
           <motion.div
-            key={i}
-            className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-primary/30 bg-surface-raised font-display text-xl text-primary shadow"
-            initial={{ opacity: 0, y: 10 }}
+            key={col.label}
+            className="flex flex-col items-center gap-2"
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
+            transition={{ delay: i * 0.12, ease: "easeOut" as const }}
           >
-            {n}
+            <BeveledIcon className="p-2">
+              <span className="text-8xl select-none sm:text-9xl">{col.emoji}</span>
+            </BeveledIcon>
+            <span className={`font-display text-lg ${col.color}`}>{col.label}</span>
           </motion.div>
         ))}
       </div>
@@ -501,7 +633,7 @@ export default function PanelIllustration({ name }: { name: string }) {
 
   return (
     <div className="flex h-full w-full items-center justify-center rounded-2xl bg-primary-light/30 px-4 py-6">
-      <p className="text-center font-body text-sm text-text-muted">{name}</p>
+      <span className="text-center font-body text-sm text-text-muted">{name}</span>
     </div>
   );
 }

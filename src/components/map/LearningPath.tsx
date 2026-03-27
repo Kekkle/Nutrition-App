@@ -69,6 +69,10 @@ function PathSegment({
   );
 }
 
+const NODE_IMAGES: Record<string, string> = {
+  "m1-n1": "/images/celly-character.png",
+};
+
 function nodeEmoji(node: LessonNode): string {
   const g = node.game;
   if ("items" in g && g.items[0]?.icon) return g.items[0].icon;
@@ -183,6 +187,7 @@ export default function LearningPath() {
                           stars={stars}
                           moduleColor={module.color}
                           icon={nodeEmoji(node)}
+                          imageUrl={NODE_IMAGES[node.id]}
                           index={staggerIndex}
                           onClick={() => {
                             if (status === "locked") return;

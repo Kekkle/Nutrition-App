@@ -19,7 +19,7 @@ export default function AnimatedPanel({ panel, direction }: AnimatedPanelProps) 
       <div className="flex h-[55%] min-h-0 shrink-0 items-center justify-center overflow-hidden rounded-t-3xl px-3 py-3">
         <PanelIllustration name={panel.illustration} />
       </div>
-      <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 py-5">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-start px-6 pt-2 pb-4">
         <p className="text-center font-body text-lg leading-relaxed text-text sm:text-xl">
           {panel.text}
         </p>

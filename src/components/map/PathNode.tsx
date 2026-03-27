@@ -7,6 +7,7 @@ export interface PathNodeProps {
   stars: number;
   moduleColor: string;
   icon: string;
+  imageUrl?: string;
   index: number;
   onClick: () => void;
 }
@@ -38,6 +39,7 @@ const PathNode = forwardRef<HTMLButtonElement, PathNodeProps>(function PathNode(
     stars,
     moduleColor,
     icon,
+    imageUrl,
     index,
     onClick,
   },
@@ -97,9 +99,13 @@ const PathNode = forwardRef<HTMLButtonElement, PathNodeProps>(function PathNode(
           style={{ borderColor: moduleColor }}
           className={`${baseButton} cursor-pointer bg-surface-raised`}
         >
-          <span className="text-3xl leading-none drop-shadow-sm" aria-hidden>
-            {icon}
-          </span>
+          {imageUrl ? (
+            <img src={imageUrl} alt="" className="h-12 w-12 object-contain drop-shadow-sm" />
+          ) : (
+            <span className="text-3xl leading-none drop-shadow-sm" aria-hidden>
+              {icon}
+            </span>
+          )}
         </motion.button>
         <p className="font-body max-w-[7.5rem] text-center text-sm font-medium text-text">{title}</p>
       </div>
@@ -125,9 +131,13 @@ const PathNode = forwardRef<HTMLButtonElement, PathNodeProps>(function PathNode(
         <span className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-white/80 bg-white/20 text-xs font-bold text-white shadow-sm backdrop-blur-[1px]">
           ✓
         </span>
-        <span className="text-2xl leading-none drop-shadow-md" aria-hidden>
-          {icon}
-        </span>
+        {imageUrl ? (
+          <img src={imageUrl} alt="" className="h-10 w-10 object-contain drop-shadow-md" />
+        ) : (
+          <span className="text-2xl leading-none drop-shadow-md" aria-hidden>
+            {icon}
+          </span>
+        )}
         <StarDots count={stars} className="mt-0.5" />
       </motion.button>
       <p className="font-body max-w-[7.5rem] text-center text-sm font-medium text-text">{title}</p>

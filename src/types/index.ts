@@ -28,6 +28,8 @@ export interface DragDropConfig {
   targets: { id: string; label: string; icon: string }[];
   /** Maps each item id to its correct target id */
   correctMapping: Record<string, string>;
+  /** Visual layout variant for the drag-drop game */
+  layout?: "side-by-side" | "body-map";
 }
 
 export interface SortConfig {
