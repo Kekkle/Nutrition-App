@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { MODULES } from "../../content/modules";
 import type { LessonNode } from "../../types";
 import ProgressBar from "../layout/ProgressBar";
@@ -18,6 +18,7 @@ function findLessonNode(nodeId: string): LessonNode | undefined {
 export default function LessonPlayer() {
   const { nodeId } = useParams<{ nodeId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const node = useMemo(
     () => (nodeId ? findLessonNode(nodeId) : undefined),
     [nodeId],
@@ -28,8 +29,15 @@ export default function LessonPlayer() {
   const [direction, setDirection] = useState(1);
 
   useEffect(() => {
-    setPanelIndex(0);
-    setDirection(1);
+    const state = location.state as { startAtEnd?: boolean } | null;
+    if (state?.startAtEnd && panels.length > 0) {
+      setPanelIndex(panels.length - 1);
+      setDirection(-1);
+      navigate(location.pathname, { replace: true, state: {} });
+    } else {
+      setPanelIndex(0);
+      setDirection(1);
+    }
   }, [nodeId]);
 
   useEffect(() => {

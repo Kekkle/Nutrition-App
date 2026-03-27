@@ -11,8 +11,8 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { motion } from "framer-motion";
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { DragDropConfig, GameItem } from "../../types";
 
 export interface DragDropProps {
@@ -115,6 +115,102 @@ function DropZone({
   );
 }
 
+
+const BOX_FILTERS: Record<string, string> = {
+  carbs: "grayscale(100%) sepia(100%) hue-rotate(310deg) saturate(400%) brightness(85%)",
+  protein: "grayscale(100%) sepia(100%) hue-rotate(180deg) saturate(350%) brightness(80%)",
+  fats: "grayscale(100%) sepia(100%) hue-rotate(330deg) saturate(500%) brightness(80%)",
+};
+
+function MysteryBoxDrop({
+  id,
+  label,
+  isHighlighted,
+  colorClass,
+  labelColor,
+  count,
+  total,
+}: {
+  id: string;
+  label: string;
+  icon: string;
+  children: ReactNode;
+  isHighlighted: boolean;
+  colorClass: string;
+  labelColor: string;
+  count: number;
+  total: number;
+}) {
+  const { isOver, setNodeRef } = useDroppable({ id });
+  const active = isOver || isHighlighted;
+
+  return (
+    <div
+      ref={setNodeRef}
+      className={`flex w-32 flex-col items-center rounded-2xl border-[3px] p-3 transition-all duration-200 sm:w-40 ${
+        active
+          ? "scale-105 border-primary bg-primary-light/30 shadow-[0_0_20px_rgba(108,92,231,0.4)]"
+          : colorClass
+      }`}
+    >
+      <img
+        src="/images/mystery-box.png"
+        alt={label}
+        className="mb-1 h-24 w-24 object-contain drop-shadow-lg sm:h-28 sm:w-28"
+        style={{ filter: BOX_FILTERS[id] ?? "" }}
+      />
+      <span className={`font-display text-sm font-bold ${labelColor}`}>{label}</span>
+      <span className="font-body text-xs text-text-muted">{count}/{total}</span>
+    </div>
+  );
+}
+
+function ScatteredCard({ item, isDragging, offset }: { item: GameItem; isDragging: boolean; offset: { rotate: number; mx: number; my: number } }) {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id: item.id });
+  const style: React.CSSProperties = {
+    transform: transform
+      ? `translate3d(${transform.x}px, ${transform.y}px, 0) rotate(${offset.rotate}deg)`
+      : `rotate(${offset.rotate}deg)`,
+    marginLeft: offset.mx,
+    marginTop: offset.my,
+  };
+
+  return (
+    <motion.div
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      className={`touch-none ${isDragging ? "opacity-30" : "opacity-100"}`}
+      initial={{ scale: 1 }}
+      exit={{ scale: 0, opacity: 0 }}
+      transition={{ duration: 0.25 }}
+    >
+      <div className={`flex cursor-grab items-center justify-center p-2 ${beveledBox} active:cursor-grabbing`}>
+        {item.icon.endsWith(".png") ? (
+          <img src={`/images/${item.icon}`} alt={item.label} className="h-11 w-11 object-contain" />
+        ) : (
+          <span className="text-5xl leading-none select-none" aria-hidden>{item.icon}</span>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+function hashStr(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return h;
+}
+
+function getScatterOffset(id: string) {
+  const h = Math.abs(hashStr(id));
+  return {
+    rotate: ((h % 35) - 17),
+    mx: ((h >> 4) % 18) - 9,
+    my: ((h >> 8) % 14) - 7,
+  };
+}
 
 const BODY_ZONE_POSITIONS: Record<string, { top: string; left: string }> = {
   head:       { top: "10%",  left: "52%" },
@@ -381,6 +477,67 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
             </div>
           </div>
         )}
+
+        {layout === "mystery-boxes" && (() => {
+          const targetTotals: Record<string, number> = {};
+          for (const it of config.items) {
+            const t = config.correctMapping[it.id];
+            if (t) targetTotals[t] = (targetTotals[t] ?? 0) + 1;
+          }
+          const boxColors: Record<string, string> = {
+            carbs: "border-carb bg-carb/10",
+            protein: "border-protein bg-protein/10",
+            fats: "border-fat bg-fat/10",
+          };
+          const labelColors: Record<string, string> = {
+            carbs: "text-carb",
+            protein: "text-protein",
+            fats: "text-fat",
+          };
+          return (
+            <div className="flex flex-1 flex-col gap-2">
+              <p className="text-center font-body text-xs font-semibold text-text-muted">
+                Drag each food into the right box
+              </p>
+              <motion.div
+                animate={shakePool ? { x: [0, -5, 5, -4, 4, 0] } : { x: 0 }}
+                transition={{ duration: 0.45, ease: "easeInOut" }}
+                className="flex flex-1 flex-wrap content-start items-start justify-center gap-x-12 gap-y-8 px-4"
+              >
+                <AnimatePresence>
+                  {poolItems.map((item) => (
+                    <ScatteredCard
+                      key={item.id}
+                      item={item}
+                      isDragging={activeId === item.id}
+                      offset={getScatterOffset(item.id)}
+                    />
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+              <div className="flex items-end justify-center gap-3 -mt-4">
+                {config.targets.map((target) => {
+                  const placedHere = config.items.filter((it) => placements[it.id] === target.id);
+                  return (
+                    <MysteryBoxDrop
+                      key={target.id}
+                      id={target.id}
+                      label={target.label}
+                      icon={target.icon}
+                      isHighlighted={overTargetId === target.id}
+                      colorClass={boxColors[target.id] ?? "border-primary bg-primary/10"}
+                      labelColor={labelColors[target.id] ?? "text-primary"}
+                      count={placedHere.length}
+                      total={targetTotals[target.id] ?? 0}
+                    >
+                      {null}
+                    </MysteryBoxDrop>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
 
         {!layout && (
           <>

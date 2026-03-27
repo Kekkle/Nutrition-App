@@ -29,7 +29,7 @@ export interface DragDropConfig {
   /** Maps each item id to its correct target id */
   correctMapping: Record<string, string>;
   /** Visual layout variant for the drag-drop game */
-  layout?: "side-by-side" | "body-map";
+  layout?: "side-by-side" | "body-map" | "mystery-boxes";
 }
 
 export interface SortConfig {
@@ -69,13 +69,31 @@ export interface SnakeCollectConfig {
   obstacles?: { x: number; y: number; w: number; h: number }[];
 }
 
+export interface CatcherCategory {
+  id: string;
+  label: string;
+  icon: string;
+  items: string[];
+}
+
+export interface CatcherConfig {
+  type: "catcher";
+  prompt: string;
+  categories: CatcherCategory[];
+  /** How many foods to drop in total per round */
+  totalDrops: number;
+  /** Starting fall speed in ms per frame tick */
+  baseFallSpeed?: number;
+}
+
 export type GameConfig =
   | MultipleChoiceConfig
   | DragDropConfig
   | SortConfig
   | SequenceConfig
   | SnakeConfig
-  | SnakeCollectConfig;
+  | SnakeCollectConfig
+  | CatcherConfig;
 
 export interface LessonNode {
   id: string;

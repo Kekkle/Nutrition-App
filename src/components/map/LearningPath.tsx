@@ -74,6 +74,8 @@ const NODE_IMAGES: Record<string, string> = {
   "m1-n2": "/images/charger-character.png",
   "m1-n3": "/images/body-outline.png",
   "m1-n4": "/images/banana-sunglasses.png",
+  "m1-n5": "/images/mystery-box.png",
+  "m1-n6": "/images/mystery-box.png",
 };
 
 function nodeEmoji(node: LessonNode): string {

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useState, type ReactNode } from "react";
 
 const floatVariant = {
@@ -49,7 +49,20 @@ function EmojiIcon({ emoji, size = "text-6xl", delay = 0 }: { emoji: string; siz
 
 function MysteryBoxesInteractive() {
   const [revealed, setRevealed] = useState([false, false, false]);
-  const contents = ["🍞", "🍗", "🧈"];
+  const boxes = [
+    {
+      filter: "grayscale(100%) sepia(100%) hue-rotate(310deg) saturate(400%) brightness(85%)",
+      emoji: "🍞", label: "Carbs", textColor: "text-carb",
+    },
+    {
+      filter: "grayscale(100%) sepia(100%) hue-rotate(180deg) saturate(350%) brightness(80%)",
+      emoji: "🍗", label: "Protein", textColor: "text-protein",
+    },
+    {
+      filter: "grayscale(100%) sepia(100%) hue-rotate(330deg) saturate(500%) brightness(80%)",
+      emoji: "🧈", label: "Fats", textColor: "text-fat",
+    },
+  ];
 
   const reveal = (index: number) => {
     setRevealed((prev) => {
@@ -60,57 +73,89 @@ function MysteryBoxesInteractive() {
     });
   };
 
+  const handleBoxClick = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    reveal(index);
+  };
+
+  const allRevealed = revealed.every(Boolean);
+
   return (
     <SceneWrapper bg="bg-primary/10">
-      <div className="flex items-center justify-center gap-4" style={{ perspective: 1000 }}>
-        {[0, 1, 2].map((i) => (
-          <motion.div
-            key={i}
-            className="h-24 w-24"
-            animate={revealed[i] ? { y: 0 } : { y: [0, -8, 0] }}
-            transition={
-              revealed[i]
-                ? { duration: 0.2 }
-                : { duration: 1.4, repeat: Infinity, ease: "easeInOut" as const }
-            }
-          >
-            <motion.button
-              type="button"
-              onClick={() => reveal(i)}
-              className="relative h-full w-full cursor-pointer border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-              aria-label={revealed[i] ? "Revealed" : "Mystery box"}
-              style={{ transformStyle: "preserve-3d", perspective: 800 }}
+      <div className="flex flex-col items-center gap-4">
+        {/* Stop propagation so taps don't advance the slide */}
+        <div
+          className="flex items-center justify-center gap-5"
+          style={{ perspective: 1000 }}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+        >
+          {boxes.map((box, i) => (
+            <motion.div
+              key={i}
+              className="flex flex-col items-center gap-2"
+              animate={revealed[i] ? { y: 0 } : { y: [0, -8, 0] }}
+              transition={
+                revealed[i]
+                  ? { duration: 0.2 }
+                  : { duration: 1.4, repeat: Infinity, delay: i * 0.2, ease: "easeInOut" as const }
+              }
             >
-              <motion.div
-                className="relative h-full w-full"
-                style={{ transformStyle: "preserve-3d" }}
-                animate={{ rotateY: revealed[i] ? 180 : 0 }}
-                transition={{ duration: 0.55, ease: "easeInOut" as const }}
+              <motion.button
+                type="button"
+                onClick={(e) => handleBoxClick(e, i)}
+                className="relative h-28 w-28 cursor-pointer border-0 bg-transparent p-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                aria-label={revealed[i] ? `${box.label} revealed` : "Mystery box - tap to reveal"}
+                style={{ transformStyle: "preserve-3d", perspective: 800 }}
               >
-                <div
-                  className={`absolute inset-0 flex items-center justify-center ${beveledBoxClass}`}
-                  style={{
-                    backfaceVisibility: "hidden",
-                    WebkitBackfaceVisibility: "hidden",
-                    transform: "rotateY(0deg)",
-                  }}
+                <motion.div
+                  className="relative h-full w-full"
+                  style={{ transformStyle: "preserve-3d" }}
+                  animate={{ rotateY: revealed[i] ? 180 : 0 }}
+                  transition={{ duration: 0.55, ease: "easeInOut" as const }}
                 >
-                  <span className="font-display text-4xl text-primary">?</span>
-                </div>
-                <div
-                  className={`absolute inset-0 flex items-center justify-center ${beveledBoxClass}`}
-                  style={{
-                    backfaceVisibility: "hidden",
-                    WebkitBackfaceVisibility: "hidden",
-                    transform: "rotateY(180deg)",
-                  }}
-                >
-                  <span className="text-5xl select-none">{contents[i]}</span>
-                </div>
-              </motion.div>
-            </motion.button>
-          </motion.div>
-        ))}
+                  <div
+                    className="absolute inset-0 flex items-center justify-center"
+                    style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(0deg)" }}
+                  >
+                    <img
+                      src="/images/mystery-box.png"
+                      alt="Mystery box"
+                      className="h-full w-full object-contain drop-shadow-lg"
+                      style={{ filter: box.filter }}
+                    />
+                  </div>
+                  <div
+                    className={`absolute inset-0 flex flex-col items-center justify-center ${beveledBoxClass}`}
+                    style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+                  >
+                    <span className="text-5xl select-none">{box.emoji}</span>
+                  </div>
+                </motion.div>
+              </motion.button>
+              <motion.span
+                className={`font-display text-sm ${box.textColor}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: revealed[i] ? 1 : 0 }}
+                transition={{ duration: 0.3, delay: 0.3 }}
+              >
+                {box.label}
+              </motion.span>
+            </motion.div>
+          ))}
+        </div>
+        <AnimatePresence>
+          {allRevealed && (
+            <motion.p
+              className="text-center font-body text-base leading-relaxed text-text sm:text-lg"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              These are called <span className="font-semibold">macronutrients</span>: carbohydrates, proteins, and fats.
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
     </SceneWrapper>
   );
@@ -583,7 +628,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
 
   "macros-coming-up-next": () => (
     <SceneWrapper bg="bg-primary-light/25">
-      <div className="flex w-full max-w-lg flex-row flex-wrap items-start justify-center gap-6 sm:gap-10">
+      <div className="flex w-full max-w-lg flex-row items-start justify-center gap-6 sm:gap-10">
         {[
           { emoji: "🍞", label: "Carbs", color: "text-carb" },
           { emoji: "🍗", label: "Protein", color: "text-protein" },
@@ -597,7 +642,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
             transition={{ delay: i * 0.12, ease: "easeOut" as const }}
           >
             <BeveledIcon className="p-2">
-              <span className="text-8xl select-none sm:text-9xl">{col.emoji}</span>
+              <span className="text-7xl select-none sm:text-8xl">{col.emoji}</span>
             </BeveledIcon>
             <span className={`font-display text-lg ${col.color}`}>{col.label}</span>
           </motion.div>

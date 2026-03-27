@@ -7,6 +7,7 @@ import type { LessonNode } from "../../types";
 import Button from "../ui/Button";
 import Modal from "../ui/Modal";
 import StarRating from "../ui/StarRating";
+import CatcherGame from "./CatcherGame";
 import DragDrop from "./DragDrop";
 import MultipleChoice from "./MultipleChoice";
 import SnakeGame from "./SnakeGame";
@@ -90,15 +91,17 @@ export default function GameShell() {
   }
 
   return (
-    <div className="flex min-h-full min-h-0 flex-col bg-surface">
+    <div className="flex h-[100dvh] min-h-0 flex-col bg-surface">
       <header className="sticky top-0 z-20 flex shrink-0 items-center gap-3 border-b-[3px] border-text/10 bg-surface-raised px-4 py-3 shadow-sm">
         <button
           type="button"
           onClick={() => navigate("/")}
-          className="flex h-11 min-w-11 items-center justify-center rounded-2xl border-[3px] border-primary/40 bg-primary-light/15 font-display text-sm font-bold text-primary transition hover:bg-primary-light/25"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-text/10 bg-surface-raised font-body text-text-muted transition hover:border-primary/30 hover:bg-primary-light/15 hover:text-primary"
           aria-label="Back to learning path"
         >
-          ←
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
         </button>
         <h1 className="min-w-0 flex-1 truncate font-display text-lg text-text">
           {node.title}
@@ -117,6 +120,8 @@ export default function GameShell() {
           <SnakeGame config={node.game} onComplete={handleGameComplete} />
         ) : node.game.type === "snake-collect" ? (
           <SnakeCollect config={node.game} onComplete={handleGameComplete} />
+        ) : node.game.type === "catcher" ? (
+          <CatcherGame config={node.game} onComplete={handleGameComplete} />
         ) : (
           <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6">
             <p className="text-center font-body text-text-muted">
@@ -132,6 +137,20 @@ export default function GameShell() {
           </div>
         )}
       </div>
+
+      <footer className="shrink-0 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] pt-2">
+        <div className="mx-auto flex max-w-md justify-start">
+          <Button
+            type="button"
+            variant="secondary"
+            size="md"
+            onClick={() => navigate(`/lesson/${nodeId}`, { state: { startAtEnd: true } })}
+            className="min-w-[6.5rem]"
+          >
+            Back
+          </Button>
+        </div>
+      </footer>
 
       <Modal open={celebrationOpen} onClose={closeCelebration}>
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-light/35 via-accent/25 to-secondary/30 px-2 py-4">
