@@ -20,7 +20,7 @@ export default function AnimatedPanel({ panel, direction }: AnimatedPanelProps) 
         <PanelIllustration name={panel.illustration} />
       </div>
       <div className="flex min-h-0 flex-1 flex-col items-center justify-start px-6 pt-2 pb-4">
-        <p className="text-center font-body text-lg leading-relaxed text-text sm:text-xl">
+        <p className="whitespace-pre-line text-center font-body text-lg leading-relaxed text-text sm:text-xl">
           {panel.text}
         </p>
       </div>

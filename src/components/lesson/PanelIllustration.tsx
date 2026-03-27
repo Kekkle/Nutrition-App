@@ -248,12 +248,14 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
     </SceneWrapper>
   ),
 
-  "phone-battery-icon-almost-empty": () => (
+  "celly-gray-uncharged": () => (
     <SceneWrapper bg="bg-error/10">
       <motion.div {...pulseVariant}>
-        <BeveledIcon>
-          <span className="text-9xl select-none">📱</span>
-        </BeveledIcon>
+        <img
+          src="/images/celly-character.png"
+          alt="Celly uncharged"
+          className="h-40 w-auto drop-shadow-lg grayscale sm:h-48"
+        />
       </motion.div>
       <div className="flex items-center gap-2">
         <BeveledIcon className="p-2">
@@ -271,62 +273,58 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
     </SceneWrapper>
   ),
 
-  "charging-cable-plugged-into-phone": () => (
+  "celly-with-charger": () => (
     <SceneWrapper bg="bg-success/10">
-      <div className="flex items-end gap-1">
+      <div className="flex items-center gap-4">
         <motion.div {...floatVariant}>
-          <BeveledIcon>
-            <span className="text-9xl select-none leading-none">📱</span>
-          </BeveledIcon>
+          <img
+            src="/images/celly-character.png"
+            alt="Celly"
+            className="h-36 w-auto drop-shadow-lg grayscale-[50%] sm:h-44"
+          />
         </motion.div>
         <motion.div
-          className="mb-2"
           animate={{ x: [4, 0, 4] }}
           transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" as const }}
         >
-          <BeveledIcon className="p-2">
-            <span className="text-5xl select-none">🔌</span>
-          </BeveledIcon>
+          <img
+            src="/images/charger-character.png"
+            alt="Charger"
+            className="h-28 w-auto drop-shadow-lg sm:h-36"
+          />
         </motion.div>
       </div>
-    </SceneWrapper>
-  ),
-
-  "lightning-bolts-flowing-into-battery-bar": () => (
-    <SceneWrapper bg="bg-warning/15">
-      <div className="flex justify-center gap-2">
+      <div className="flex items-center gap-2">
         {["⚡", "⚡", "⚡"].map((e, i) => (
-          <motion.div
+          <motion.span
             key={i}
-            animate={{ opacity: [0.6, 1, 0.6], scale: [1, 1.05, 1] }}
-            transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" as const }}
+            className="text-2xl select-none"
+            animate={{ opacity: [0.4, 1, 0.4], scale: [1, 1.15, 1] }}
+            transition={{ duration: 1, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" as const }}
           >
-            <BeveledIcon className="p-2">
-              <span className="text-5xl select-none">{e}</span>
-            </BeveledIcon>
-          </motion.div>
+            {e}
+          </motion.span>
         ))}
       </div>
-      <div className="h-8 w-44 overflow-hidden rounded-full border-2 border-warning/50 bg-gray-200">
-        <motion.div
-          className="h-full rounded-full bg-warning"
-          initial={{ width: "10%" }}
-          animate={{ width: "85%" }}
-          transition={{ duration: 2, ease: "easeOut" as const }}
-        />
-      </div>
     </SceneWrapper>
   ),
 
-  "phone-screen-bright-apps-active": () => (
+  "celly-fully-charged": () => (
     <SceneWrapper bg="bg-success/20">
       <motion.div {...pulseVariant}>
-        <BeveledIcon>
-          <span className="text-9xl select-none">📱</span>
-        </BeveledIcon>
+        <img
+          src="/images/celly-character.png"
+          alt="Celly fully charged"
+          className="h-40 w-auto drop-shadow-lg sm:h-48"
+        />
       </motion.div>
-      <div className="h-7 w-36 overflow-hidden rounded-full border-2 border-success/40 bg-gray-200">
-        <div className="h-full w-full rounded-full bg-success" />
+      <div className="flex items-center gap-2">
+        <BeveledIcon className="p-2">
+          <span className="text-4xl select-none">🔋</span>
+        </BeveledIcon>
+        <div className="h-7 w-36 overflow-hidden rounded-full border-2 border-success/40 bg-gray-200">
+          <div className="h-full w-full rounded-full bg-success" />
+        </div>
       </div>
     </SceneWrapper>
   ),

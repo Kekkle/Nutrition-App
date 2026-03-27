@@ -75,32 +75,31 @@ export const MODULES: Module[] = [
           {
             id: "m1-n2-p1",
             text: "All those apps need energy. Without power, the phone screen stays black.",
-            illustration: "phone-battery-icon-almost-empty",
+            illustration: "celly-gray-uncharged",
           },
           {
             id: "m1-n2-p2",
-            text: "Plugging in the phone and letting it charge refills the battery.",
-            illustration: "charging-cable-plugged-into-phone",
+            text: "Plugging in the phone and letting it charge refills the battery.\nElectricity is the phone's power source.",
+            illustration: "celly-with-charger",
           },
           {
             id: "m1-n2-p3",
-            text: "Electricity is the phone's power source.",
-            illustration: "lightning-bolts-flowing-into-battery-bar",
-          },
-          {
-            id: "m1-n2-p4",
             text: "When the battery is full enough, every app can work again.",
-            illustration: "phone-screen-bright-apps-active",
+            illustration: "celly-fully-charged",
           },
         ],
         game: {
-          type: "drag-drop",
-          prompt: "Power up your phone!",
-          items: [{ id: "plug", label: "Plug", icon: "🔌" }],
-          targets: [{ id: "socket", label: "Socket", icon: "🔋" }],
-          correctMapping: {
-            plug: "socket",
-          },
+          type: "snake",
+          prompt: "Charge the phone!",
+          gridWidth: 15,
+          gridHeight: 12,
+          plugStart: { x: 1, y: 10 },
+          socketPos: { x: 13, y: 1 },
+          obstacles: [
+            { x: 4, y: 2, w: 1, h: 6 },
+            { x: 8, y: 4, w: 1, h: 7 },
+            { x: 11, y: 1, w: 1, h: 5 },
+          ],
         },
         funFact:
           "A fully charged phone battery can last about 10-12 hours.",

@@ -9,6 +9,7 @@ import Modal from "../ui/Modal";
 import StarRating from "../ui/StarRating";
 import DragDrop from "./DragDrop";
 import MultipleChoice from "./MultipleChoice";
+import SnakeGame from "./SnakeGame";
 
 function findLessonNode(nodeId: string): LessonNode | undefined {
   for (const mod of MODULES) {
@@ -111,6 +112,8 @@ export default function GameShell() {
           />
         ) : node.game.type === "drag-drop" ? (
           <DragDrop config={node.game} onComplete={handleGameComplete} />
+        ) : node.game.type === "snake" ? (
+          <SnakeGame config={node.game} onComplete={handleGameComplete} />
         ) : (
           <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6">
             <p className="text-center font-body text-text-muted">

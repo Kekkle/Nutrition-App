@@ -1,4 +1,4 @@
-export type GameType = "multiple-choice" | "drag-drop" | "sort" | "sequence";
+export type GameType = "multiple-choice" | "drag-drop" | "sort" | "sequence" | "snake";
 
 export type NodeStatus = "locked" | "current" | "completed";
 
@@ -47,11 +47,22 @@ export interface SequenceConfig {
   correctOrder: string[];
 }
 
+export interface SnakeConfig {
+  type: "snake";
+  prompt: string;
+  gridWidth: number;
+  gridHeight: number;
+  plugStart: { x: number; y: number };
+  socketPos: { x: number; y: number };
+  obstacles: { x: number; y: number; w: number; h: number }[];
+}
+
 export type GameConfig =
   | MultipleChoiceConfig
   | DragDropConfig
   | SortConfig
-  | SequenceConfig;
+  | SequenceConfig
+  | SnakeConfig;
 
 export interface LessonNode {
   id: string;
