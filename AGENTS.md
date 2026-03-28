@@ -68,6 +68,7 @@ These should map to tap/drag game moments or quiz prompts that let the learner g
 
 - **Build from familiar to new.** Every section starts with something the learner already knows (phones, food they eat) and zooms into something new (molecules, cells, insulin).
 - **End sections with a bridge.** Before moving on, explicitly connect back: "Now we're ready to explore how food turns into energy!" This prevents the feeling of random topic jumps.
+- **No redundant slides.** Each lesson panel must introduce a distinct new idea or visual. If two consecutive panels cover the same concept or one is a direct continuation of the other, merge them into a single panel and remove the extra. Never spread one idea across multiple slides.
 
 ## Character and personality notes
 
@@ -104,6 +105,15 @@ You are a helpful agent who uses simple words and appealing, cartoony visuals th
 - **Body/blurb text** uses the Quicksand font.
 - **Key terms** are introduced in a highlighted or contrasting color (e.g., "MACRO NUTRIENTS" in purple against white heading text).
 - **Equations and equivalences** are shown visually: "FOOD = ENERGY," "Each system = an app." Use this visual shorthand in the app too.
+
+## Icons and images
+
+- **No text labels under icons or images.** Icons and illustrations should stand on their own without descriptive text beneath them. Only add text under an image when explicitly requested.
+
+## Slide and game screen layout
+
+- **Lesson panels:** Position the text close to the visual/graphic section — directly underneath or tightly beneath the illustration, not floating in the middle of empty space.
+- **Game screens:** Include a **"Back" button** at the bottom of the page (matching the lesson slide footer style) so the user can return to the last lesson panel. Keep an **exit arrow** in the top-left corner so users can also leave to the learning path.
 
 # Git & GitHub
 
