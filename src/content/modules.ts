@@ -260,7 +260,7 @@ export const MODULES: Module[] = [
           },
           {
             id: "m1-n5-p4",
-            text: "Protein is found in animal foods like chicken, fish, eggs, and dairy.",
+            text: "Protein is found in animal foods like chicken, fish, eggs, and dairy—but also in some plant foods like beans and nuts.",
             illustration: "what-is-protein",
           },
           {
@@ -303,7 +303,6 @@ export const MODULES: Module[] = [
             { id: "milk", label: "Milk", icon: "🥛" },
             { id: "broccoli", label: "Broccoli", icon: "🥦" },
             { id: "potato", label: "Potato", icon: "🥔" },
-            { id: "tomato", label: "Tomato", icon: "🍅" },
           ],
           targets: [
             { id: "carbs", label: "Carbs", icon: "🍞" },
@@ -313,7 +312,7 @@ export const MODULES: Module[] = [
           correctMapping: {
             bread: "carbs", rice: "carbs", pasta: "carbs", potato: "carbs", banana: "carbs",
             cookie: "carbs", watermelon: "carbs", orange: "carbs", carrot: "carbs",
-            broccoli: "carbs", tomato: "carbs", strawberry: "carbs",
+            broccoli: "carbs", strawberry: "carbs",
             chicken: "protein", meat: "protein", fish: "protein", egg: "protein",
             beans: "protein", milk: "protein", sausage: "protein",
             butter: "fats", avocado: "fats", peanuts: "fats", cheese: "protein", olive: "fats",

@@ -653,7 +653,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
 
   "what-are-carbs": () => (
     <SceneWrapper bg="bg-carb/10">
-      <p className="font-display text-lg text-carb">Carbohydrates</p>
+      <p className="font-display text-2xl text-carb">Carbohydrates</p>
       <div className="grid grid-cols-5 gap-2">
         {["🥦", "🍎", "🍞", "🍚", "🍝"].map((e, i) => (
           <motion.div
@@ -673,9 +673,9 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
 
   "what-is-protein": () => (
     <SceneWrapper bg="bg-protein/10">
-      <p className="font-display text-lg text-protein">Protein</p>
+      <p className="font-display text-2xl text-protein">Protein</p>
       <div className="grid grid-cols-5 gap-2">
-        {["🍗", "🥛", "🥩", "🥚", "🐟"].map((e, i) => (
+        {["🍗", "🥛", "🫘", "🥚", "🐟"].map((e, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, scale: 0.6 }}
@@ -718,7 +718,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
 
   "what-are-fats": () => (
     <SceneWrapper bg="bg-fat/10">
-      <p className="font-display text-lg text-fat">Fats</p>
+      <p className="font-display text-2xl text-fat">Fats</p>
       <div className="grid grid-cols-5 gap-2">
         {["🫒", "🧈", "🥜", "🥑", "foods/olive-oil.png"].map((e, i) => (
           <motion.div

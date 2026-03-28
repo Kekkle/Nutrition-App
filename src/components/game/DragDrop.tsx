@@ -213,8 +213,8 @@ function getScatterOffset(id: string) {
 }
 
 const BODY_ZONE_POSITIONS: Record<string, { top: string; left: string }> = {
-  head:       { top: "14%",  left: "50%" },
-  chest:      { top: "38%",  left: "50%" },
+  head:       { top: "20%",  left: "50%" },
+  chest:      { top: "44%",  left: "50%" },
   "left-arm": { top: "35%",  left: "8%" },
   "right-arm":{ top: "35%",  left: "95%" },
   "left-leg": { top: "78%",  left: "35%" },
@@ -224,20 +224,26 @@ const BODY_ZONE_POSITIONS: Record<string, { top: string; left: string }> = {
 function BodyDropZone({
   id,
   isHighlighted,
-  wide,
+  shape,
   children,
 }: {
   id: string;
   label: string;
   icon: string;
   isHighlighted: boolean;
-  wide?: boolean;
+  shape?: "wide" | "horizontal" | "vertical";
   children: ReactNode;
 }) {
   const { isOver, setNodeRef } = useDroppable({ id });
   const active = isOver || isHighlighted;
   const hasContent = children && (children as React.ReactElement[])?.length > 0;
   const pos = BODY_ZONE_POSITIONS[id] ?? { top: "50%", left: "50%" };
+
+  const sizeClass =
+    shape === "wide" ? "grid grid-cols-2 gap-1 min-h-[96px] min-w-[96px]"
+    : shape === "horizontal" ? "flex-row gap-1 min-h-[48px] min-w-[96px]"
+    : shape === "vertical" ? "flex-col gap-1 min-w-[48px] min-h-[96px]"
+    : "min-h-[48px] min-w-[48px] flex-col";
 
   return (
     <div
@@ -246,7 +252,7 @@ function BodyDropZone({
       style={{ top: pos.top, left: pos.left }}
     >
       <div
-        className={`flex ${wide ? "grid grid-cols-2 gap-1 min-h-[96px] min-w-[96px]" : "min-h-[48px] min-w-[48px] flex-col"} items-center justify-center rounded-2xl border-[3px] border-dashed p-1.5 transition-all duration-200 ${
+        className={`flex ${sizeClass} items-center justify-center rounded-2xl border-[3px] border-dashed p-1.5 transition-all duration-200 ${
           active
             ? "border-primary bg-primary-light/40 shadow-[0_0_16px_rgba(108,92,231,0.4)] scale-110"
             : hasContent
@@ -463,7 +469,12 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
                     label={target.label}
                     icon={target.icon}
                     isHighlighted={overTargetId === target.id}
-                    wide={target.id === "chest"}
+                    shape={
+                      target.id === "chest" ? "wide"
+                      : target.id === "left-arm" || target.id === "right-arm" ? "horizontal"
+                      : target.id === "left-leg" || target.id === "right-leg" ? "vertical"
+                      : undefined
+                    }
                   >
                     {placedHere.length > 0
                       ? placedHere.map((it) => <PlacedChip key={it.id} item={it} />)
@@ -522,7 +533,7 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
               <motion.div
                 animate={shakePool ? { x: [0, -5, 5, -4, 4, 0] } : { x: 0 }}
                 transition={{ duration: 0.45, ease: "easeInOut" }}
-                className="mx-auto grid grid-cols-5 gap-2 px-2"
+                className="mx-auto grid grid-cols-5 gap-6 px-2"
               >
                 <AnimatePresence>
                   {poolItems.map((item) => (
@@ -535,7 +546,7 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
                   ))}
                 </AnimatePresence>
               </motion.div>
-              <div className="flex items-end justify-center gap-3 mt-10">
+              <div className="flex items-end justify-center gap-3 mt-24">
                 {config.targets.map((target) => {
                   const placedHere = config.items.filter((it) => placements[it.id] === target.id);
                   return (
