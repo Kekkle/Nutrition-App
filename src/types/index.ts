@@ -55,6 +55,8 @@ export interface SnakeConfig {
   plugStart: { x: number; y: number };
   socketPos: { x: number; y: number };
   obstacles: { x: number; y: number; w: number; h: number }[];
+  collectibles?: { x: number; y: number; emoji: string }[];
+  collectiblesRequired?: number;
 }
 
 export interface SnakeCollectConfig {

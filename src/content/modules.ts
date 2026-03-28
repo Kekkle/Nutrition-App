@@ -100,6 +100,12 @@ export const MODULES: Module[] = [
             { x: 8, y: 4, w: 1, h: 7 },
             { x: 11, y: 1, w: 1, h: 5 },
           ],
+          collectibles: [
+            { x: 3, y: 9, emoji: "⚡" },
+            { x: 6, y: 3, emoji: "⚡" },
+            { x: 10, y: 8, emoji: "⚡" },
+          ],
+          collectiblesRequired: 3,
         },
         funFact:
           "A fully charged phone battery can last about 10-12 hours.",
@@ -215,7 +221,7 @@ export const MODULES: Module[] = [
         ],
         game: {
           type: "snake-collect",
-          prompt: "Fill the battery!",
+          prompt: "Charge your \"battery\"!",
           gridWidth: 18,
           gridHeight: 14,
           startPos: { x: 9, y: 7 },
@@ -250,7 +256,7 @@ export const MODULES: Module[] = [
         ],
         game: {
           type: "drag-drop",
-          prompt: "Sort the foods into the right box!",
+          prompt: "Sort the foods!",
           layout: "mystery-boxes",
           items: [
             { id: "chicken", label: "Chicken", icon: "🍗" },
@@ -290,7 +296,7 @@ export const MODULES: Module[] = [
             broccoli: "carbs", tomato: "carbs", strawberry: "carbs",
             chicken: "protein", meat: "protein", fish: "protein", egg: "protein",
             beans: "protein", milk: "protein", sausage: "protein",
-            butter: "fats", avocado: "fats", peanuts: "fats", cheese: "fats", olive: "fats",
+            butter: "fats", avocado: "fats", peanuts: "fats", cheese: "protein", olive: "fats",
             "peanut-butter": "fats",
           },
         },

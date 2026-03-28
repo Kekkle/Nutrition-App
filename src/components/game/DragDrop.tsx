@@ -497,7 +497,7 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
           return (
             <div className="flex flex-1 flex-col gap-2">
               <p className="text-center font-body text-xs font-semibold text-text-muted">
-                Drag each food into the right box
+                Drag and drop the foods into the correct macronutrient box
               </p>
               <motion.div
                 animate={shakePool ? { x: [0, -5, 5, -4, 4, 0] } : { x: 0 }}

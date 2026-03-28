@@ -312,7 +312,7 @@ export default function SnakeCollect({ config, onComplete }: Props) {
       </div>
 
       <p className="text-center font-body text-xs text-text-muted">
-        Collect food, water, and sleep icons. Avoid the bad ones!
+        Collect food, water, and sleep icons, while avoiding the icons that don't power you!
       </p>
     </div>
   );

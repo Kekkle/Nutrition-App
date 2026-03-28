@@ -16,6 +16,8 @@ function posEq(a: Pos, b: Pos) {
 
 export default function SnakeGame({ config, onComplete }: Props) {
   const { gridWidth, gridHeight, plugStart, socketPos, obstacles } = config;
+  const collectibles = config.collectibles ?? [];
+  const collectiblesRequired = config.collectiblesRequired ?? 0;
 
   const obstacleSet = useRef(new Set<string>());
   if (obstacleSet.current.size === 0) {
@@ -28,11 +30,15 @@ export default function SnakeGame({ config, onComplete }: Props) {
     }
   }
 
-  const [snake, setSnake] = useState<Pos[]>([plugStart]);
+  const initialSnake: Pos[] = [plugStart, { x: plugStart.x - 1, y: plugStart.y }];
+  const [snake, setSnake] = useState<Pos[]>(initialSnake);
+  const snakeRef = useRef<Pos[]>(initialSnake);
   const [dir, setDir] = useState<Dir>("right");
   const [gameOver, setGameOver] = useState(false);
   const [won, setWon] = useState(false);
   const [moves, setMoves] = useState(0);
+  const [collected, setCollected] = useState<Set<number>>(new Set());
+  const collectedRef = useRef<Set<number>>(new Set());
   const dirRef = useRef<Dir>("right");
   const tickRef = useRef<ReturnType<typeof setInterval>>(undefined);
 
@@ -45,35 +51,49 @@ export default function SnakeGame({ config, onComplete }: Props) {
   );
 
   const tick = useCallback(() => {
-    setSnake((prev) => {
-      const head = prev[0]!;
-      const d = dirRef.current;
-      const next: Pos = {
-        x: head.x + (d === "left" ? -1 : d === "right" ? 1 : 0),
-        y: head.y + (d === "up" ? -1 : d === "down" ? 1 : 0),
-      };
+    const prev = snakeRef.current;
+    const head = prev[0]!;
+    const d = dirRef.current;
+    const next: Pos = {
+      x: head.x + (d === "left" ? -1 : d === "right" ? 1 : 0),
+      y: head.y + (d === "up" ? -1 : d === "down" ? 1 : 0),
+    };
 
-      if (isBlocked(next) || prev.some((s) => posEq(s, next))) {
-        setGameOver(true);
-        return prev;
-      }
+    if (isBlocked(next) || prev.some((s) => posEq(s, next))) {
+      setGameOver(true);
+      return;
+    }
 
-      if (posEq(next, socketPos)) {
+    const colIdx = collectibles.findIndex(
+      (c, ci) => !collectedRef.current.has(ci) && posEq(next, c),
+    );
+
+    let newSnake: Pos[];
+    if (colIdx !== -1) {
+      collectedRef.current = new Set([...collectedRef.current, colIdx]);
+      setCollected(new Set(collectedRef.current));
+      newSnake = [next, ...prev];
+    } else {
+      const allCollected = collectedRef.current.size >= collectiblesRequired;
+      if (posEq(next, socketPos) && allCollected) {
         setWon(true);
-        return [next, ...prev];
+        newSnake = [next, ...prev];
+      } else {
+        newSnake = [next, ...prev.slice(0, -1)];
       }
+    }
 
-      setMoves((m) => m + 1);
-      return [next, ...prev.slice(0, Math.min(prev.length, 4))];
-    });
-  }, [isBlocked, socketPos]);
+    snakeRef.current = newSnake;
+    setSnake(newSnake);
+    setMoves((m) => m + 1);
+  }, [isBlocked, socketPos, collectibles, collectiblesRequired]);
 
   useEffect(() => {
     if (gameOver || won) {
       if (tickRef.current) clearInterval(tickRef.current);
       return;
     }
-    tickRef.current = setInterval(tick, 200);
+    tickRef.current = setInterval(tick, 280);
     return () => {
       if (tickRef.current) clearInterval(tickRef.current);
     };
@@ -151,12 +171,15 @@ export default function SnakeGame({ config, onComplete }: Props) {
   }, [handleSwipe]);
 
   const restart = () => {
-    setSnake([plugStart]);
+    snakeRef.current = initialSnake;
+    setSnake(initialSnake);
     dirRef.current = "right";
     setDir("right");
     setGameOver(false);
     setWon(false);
     setMoves(0);
+    collectedRef.current = new Set();
+    setCollected(new Set());
   };
 
   return (
@@ -194,9 +217,31 @@ export default function SnakeGame({ config, onComplete }: Props) {
             }),
           )}
 
+          {collectibles.map((c, ci) =>
+            !collected.has(ci) ? (
+              <div
+                key={`bolt-${ci}`}
+                className="flex items-center justify-center"
+                style={{ gridColumn: c.x + 1, gridRow: c.y + 1 }}
+              >
+                <motion.span
+                  className="text-lg sm:text-2xl"
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" as const }}
+                >
+                  {c.emoji}
+                </motion.span>
+              </div>
+            ) : null,
+          )}
+
           <div
             className="flex items-center justify-center"
-            style={{ gridColumn: socketPos.x + 1, gridRow: socketPos.y + 1 }}
+            style={{
+              gridColumn: socketPos.x + 1,
+              gridRow: socketPos.y + 1,
+              opacity: collected.size >= collectiblesRequired ? 1 : 0.3,
+            }}
           >
             <span className="text-lg sm:text-2xl">📱</span>
           </div>
@@ -275,10 +320,19 @@ export default function SnakeGame({ config, onComplete }: Props) {
         <div />
       </div>
 
+      {collectiblesRequired > 0 && (
+        <p className="text-center font-body text-sm font-semibold text-text">
+          ⚡ {collected.size} / {collectiblesRequired}
+          {collected.size >= collectiblesRequired
+            ? " — Head to the phone!"
+            : " — Collect the bolts first!"}
+        </p>
+      )}
+
       <p className="text-center font-body text-xs text-text-muted">
         {typeof window !== "undefined" && "ontouchstart" in window
-          ? "Swipe or use the arrows to guide the plug to the battery!"
-          : "Use arrow keys to guide the plug to the battery!"}
+          ? "Swipe to collect electricity to power the phone!"
+          : "Use arrow keys to collect electricity to power the phone!"}
       </p>
     </div>
   );
