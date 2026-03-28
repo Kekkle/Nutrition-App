@@ -48,6 +48,7 @@ export default function GameShell() {
 
   const [celebrationOpen, setCelebrationOpen] = useState(false);
   const [earnedStars, setEarnedStars] = useState(0);
+  const [gameKey, setGameKey] = useState(0);
 
   const handleGameComplete = useCallback(
     async (stars: number) => {
@@ -63,6 +64,11 @@ export default function GameShell() {
     setCelebrationOpen(false);
     navigate("/");
   }, [navigate]);
+
+  const playAgain = useCallback(() => {
+    setCelebrationOpen(false);
+    setGameKey((k) => k + 1);
+  }, []);
 
   if (!nodeId) {
     return (
@@ -108,7 +114,7 @@ export default function GameShell() {
         </h1>
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col" key={gameKey}>
         {node.game.type === "multiple-choice" ? (
           <MultipleChoice
             config={node.game}
@@ -224,9 +230,18 @@ export default function GameShell() {
 
             <Button
               type="button"
+              variant="primary"
+              size="lg"
+              className="mt-2 w-full max-w-xs"
+              onClick={playAgain}
+            >
+              Play again
+            </Button>
+            <Button
+              type="button"
               variant="success"
               size="lg"
-              className="mt-2 w-full max-w-xs shadow-[0_6px_0_rgba(0,184,148,0.35)]"
+              className="w-full max-w-xs shadow-[0_6px_0_rgba(0,184,148,0.35)]"
               onClick={closeCelebration}
             >
               Continue

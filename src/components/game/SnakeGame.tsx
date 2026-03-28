@@ -41,12 +41,16 @@ export default function SnakeGame({ config, onComplete }: Props) {
   const collectedRef = useRef<Set<number>>(new Set());
   const dirRef = useRef<Dir>("right");
   const tickRef = useRef<ReturnType<typeof setInterval>>(undefined);
+  const [speedLevel, setSpeedLevel] = useState(-2);
 
-  const isBlocked = useCallback(
-    (p: Pos) => {
-      if (p.x < 0 || p.x >= gridWidth || p.y < 0 || p.y >= gridHeight) return true;
-      return obstacleSet.current.has(`${p.x},${p.y}`);
-    },
+  const baseSpeed = 280;
+  const speed = Math.max(100, baseSpeed - speedLevel * 40);
+
+  const wrap = useCallback(
+    (p: Pos): Pos => ({
+      x: ((p.x % gridWidth) + gridWidth) % gridWidth,
+      y: ((p.y % gridHeight) + gridHeight) % gridHeight,
+    }),
     [gridWidth, gridHeight],
   );
 
@@ -54,12 +58,13 @@ export default function SnakeGame({ config, onComplete }: Props) {
     const prev = snakeRef.current;
     const head = prev[0]!;
     const d = dirRef.current;
-    const next: Pos = {
+    const raw: Pos = {
       x: head.x + (d === "left" ? -1 : d === "right" ? 1 : 0),
       y: head.y + (d === "up" ? -1 : d === "down" ? 1 : 0),
     };
+    const next = wrap(raw);
 
-    if (isBlocked(next) || prev.some((s) => posEq(s, next))) {
+    if (obstacleSet.current.has(`${next.x},${next.y}`) || prev.some((s) => posEq(s, next))) {
       setGameOver(true);
       return;
     }
@@ -86,18 +91,18 @@ export default function SnakeGame({ config, onComplete }: Props) {
     snakeRef.current = newSnake;
     setSnake(newSnake);
     setMoves((m) => m + 1);
-  }, [isBlocked, socketPos, collectibles, collectiblesRequired]);
+  }, [wrap, socketPos, collectibles, collectiblesRequired]);
 
   useEffect(() => {
     if (gameOver || won) {
       if (tickRef.current) clearInterval(tickRef.current);
       return;
     }
-    tickRef.current = setInterval(tick, 280);
+    tickRef.current = setInterval(tick, speed);
     return () => {
       if (tickRef.current) clearInterval(tickRef.current);
     };
-  }, [tick, gameOver, won]);
+  }, [tick, gameOver, won, speed]);
 
   useEffect(() => {
     if (won) {
@@ -180,6 +185,7 @@ export default function SnakeGame({ config, onComplete }: Props) {
     setMoves(0);
     collectedRef.current = new Set();
     setCollected(new Set());
+    setSpeedLevel(-2);
   };
 
   return (
@@ -272,8 +278,10 @@ export default function SnakeGame({ config, onComplete }: Props) {
             <p className="font-display text-xl text-error">Oops!</p>
             <button
               type="button"
+              autoFocus
               onClick={restart}
-              className="rounded-xl bg-primary px-5 py-2 font-display text-sm text-white shadow-md transition hover:bg-primary/80"
+              onKeyDown={(e) => { if (e.key === "Enter") restart(); }}
+              className="rounded-xl bg-primary px-5 py-2 font-display text-sm text-white shadow-md transition hover:bg-primary/80 focus-visible:ring-2 focus-visible:ring-primary/60"
             >
               Try again
             </button>
@@ -320,6 +328,26 @@ export default function SnakeGame({ config, onComplete }: Props) {
         <div />
       </div>
 
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setSpeedLevel((l) => Math.max(-3, l - 1))}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 font-display text-lg text-primary transition active:bg-primary/30"
+          aria-label="Slow down"
+        >
+          −
+        </button>
+        <span className="font-body text-xs text-text-muted">Speed</span>
+        <button
+          type="button"
+          onClick={() => setSpeedLevel((l) => Math.min(3, l + 1))}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 font-display text-lg text-primary transition active:bg-primary/30"
+          aria-label="Speed up"
+        >
+          +
+        </button>
+      </div>
+
       {collectiblesRequired > 0 && (
         <p className="text-center font-body text-sm font-semibold text-text">
           ⚡ {collected.size} / {collectiblesRequired}
@@ -328,12 +356,6 @@ export default function SnakeGame({ config, onComplete }: Props) {
             : " — Collect the bolts first!"}
         </p>
       )}
-
-      <p className="text-center font-body text-xs text-text-muted">
-        {typeof window !== "undefined" && "ontouchstart" in window
-          ? "Swipe to collect electricity to power the phone!"
-          : "Use arrow keys to collect electricity to power the phone!"}
-      </p>
     </div>
   );
 }

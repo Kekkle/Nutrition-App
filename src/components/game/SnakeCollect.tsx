@@ -50,8 +50,10 @@ export default function SnakeCollect({ config, onComplete }: Props) {
   const tickRef = useRef<ReturnType<typeof setInterval>>(undefined);
   const spawnIdRef = useRef(0);
   const swipeRef = useRef<HTMLDivElement>(null);
+  const [speedLevel, setSpeedLevel] = useState(-2);
 
-  const speed = Math.max(120, 320 - collected * 10);
+  const baseSpeed = Math.max(120, 320 - collected * 10);
+  const speed = Math.max(80, baseSpeed - speedLevel * 40);
 
   const spawnItem = useCallback(() => {
     if (spawnCount >= totalSpawns) return;
@@ -63,7 +65,8 @@ export default function SnakeCollect({ config, onComplete }: Props) {
       attempts++;
     } while ((allPositions.some((p) => posEq(p, pos)) || obstacleSet.current.has(`${pos.x},${pos.y}`)) && attempts < 50);
 
-    const isGood = Math.random() < 0.6;
+    const hasGoodOnScreen = items.some((i) => i.good);
+    const isGood = !hasGoodOnScreen || Math.random() < 0.6;
     const pool = isGood ? goodItems : badItems;
     const icon = pool[Math.floor(Math.random() * pool.length)]!;
     spawnIdRef.current += 1;
@@ -83,15 +86,14 @@ export default function SnakeCollect({ config, onComplete }: Props) {
     setSnake((prev) => {
       const head = prev[0]!;
       const d = dirRef.current;
-      const next: Pos = {
+      const raw: Pos = {
         x: head.x + (d === "left" ? -1 : d === "right" ? 1 : 0),
         y: head.y + (d === "up" ? -1 : d === "down" ? 1 : 0),
       };
-
-      if (next.x < 0 || next.x >= gridWidth || next.y < 0 || next.y >= gridHeight) {
-        setGameOver(true);
-        return prev;
-      }
+      const next: Pos = {
+        x: ((raw.x % gridWidth) + gridWidth) % gridWidth,
+        y: ((raw.y % gridHeight) + gridHeight) % gridHeight,
+      };
 
       if (obstacleSet.current.has(`${next.x},${next.y}`)) {
         setGameOver(true);
@@ -109,8 +111,7 @@ export default function SnakeCollect({ config, onComplete }: Props) {
         if (hitItem.good) {
           setCollected((c) => {
             const newC = c + 1;
-            const goodTotal = Math.ceil(totalSpawns * 0.6);
-            if (newC >= goodTotal) setWon(true);
+            if (newC >= 5) setWon(true);
             return newC;
           });
           return [next, ...prev];
@@ -124,7 +125,7 @@ export default function SnakeCollect({ config, onComplete }: Props) {
 
       return [next, ...prev.slice(0, -1)];
     });
-  }, [gridWidth, gridHeight, items, collected, totalSpawns]);
+  }, [gridWidth, gridHeight, items]);
 
   useEffect(() => {
     if (gameOver || won) {
@@ -207,9 +208,10 @@ export default function SnakeCollect({ config, onComplete }: Props) {
     setItems([]);
     setSpawnCount(0);
     spawnIdRef.current = 0;
+    setSpeedLevel(-2);
   };
 
-  const goodTarget = Math.ceil(totalSpawns * 0.6);
+  const goodTarget = 5;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col items-center gap-2 px-4 pb-4">
@@ -284,8 +286,10 @@ export default function SnakeCollect({ config, onComplete }: Props) {
             </p>
             <button
               type="button"
+              autoFocus
               onClick={restart}
-              className="rounded-xl bg-primary px-5 py-2 font-display text-sm text-white shadow-md transition hover:bg-primary/80"
+              onKeyDown={(e) => { if (e.key === "Enter") restart(); }}
+              className="rounded-xl bg-primary px-5 py-2 font-display text-sm text-white shadow-md transition hover:bg-primary/80 focus-visible:ring-2 focus-visible:ring-primary/60"
             >
               Try again
             </button>
@@ -311,9 +315,25 @@ export default function SnakeCollect({ config, onComplete }: Props) {
         <div />
       </div>
 
-      <p className="text-center font-body text-xs text-text-muted">
-        Collect food, water, and sleep icons, while avoiding the icons that don't power you!
-      </p>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setSpeedLevel((l) => Math.max(-3, l - 1))}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 font-display text-lg text-primary transition active:bg-primary/30"
+          aria-label="Slow down"
+        >
+          −
+        </button>
+        <span className="font-body text-xs text-text-muted">Speed</span>
+        <button
+          type="button"
+          onClick={() => setSpeedLevel((l) => Math.min(3, l + 1))}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 font-display text-lg text-primary transition active:bg-primary/30"
+          aria-label="Speed up"
+        >
+          +
+        </button>
+      </div>
     </div>
   );
 }
