@@ -110,10 +110,19 @@ You are a helpful agent who uses simple words and appealing, cartoony visuals th
 
 - **No text labels under icons or images.** Icons and illustrations should stand on their own without descriptive text beneath them. Only add text under an image when explicitly requested.
 
+## App frame
+
+- **Fixed-width frame:** The entire app is constrained to `max-width: 30rem` (480 px) and centered horizontally. Every screen — lessons, games, learning path, onboarding — must stay within this frame. The body background outside the frame is a muted purple-gray (`#e2e0ea`) so the app stands out as a contained device.
+- **No `sm:` width/layout overrides:** Because the container is always phone-width but the viewport may be desktop-sized, never use Tailwind `sm:` (or larger) breakpoints to change widths, switch flex-direction, or resize containers. `sm:` text-size tweaks (e.g. `sm:text-xl`) are acceptable since text wraps naturally.
+
 ## Slide and game screen layout
 
 - **Lesson panels:** Position the text close to the visual/graphic section — directly underneath or tightly beneath the illustration, not floating in the middle of empty space.
 - **Game screens:** Include a **"Back" button** at the bottom of the page (matching the lesson slide footer style) so the user can return to the last lesson panel. Keep an **exit arrow** in the top-left corner so users can also leave to the learning path.
+**Icon settings** Always ask about icon row layout.
+- **Celly character sizing:** On slides that include Celly alongside other elements (e.g. icon grids), size Celly to fit within the illustration area without overflowing — typically `h-28`.
+- **Drag-and-drop game spacing:** Always leave one button-width of vertical space (`mt-10` / ~2.5 rem) between draggable icon rows and the drop-target boxes below. Never use negative margins to collapse that gap.
+- **Icon alignment in grids:** Food or app icons in game grids must be symmetrically aligned — no random rotation, margin offsets, or scatter effects. Use a clean grid with centered items.
 
 # Git & GitHub
 

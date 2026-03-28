@@ -164,11 +164,11 @@ function MysteryBoxesInteractive() {
 const ILLUSTRATIONS: Record<string, () => ReactNode> = {
   "phone-with-colorful-app-icons": () => (
     <SceneWrapper bg="bg-primary-light/40">
-      <div className="flex w-full max-w-xl flex-row flex-wrap items-center justify-center gap-6">
+      <div className="flex w-full flex-col items-center gap-3">
         <motion.div {...floatVariant}>
-          <img src="/images/celly-character.png" alt="Celly" className="h-40 w-auto drop-shadow-lg sm:h-48" />
+          <img src="/images/celly-character.png" alt="Celly" className="h-28 w-auto drop-shadow-lg" />
         </motion.div>
-        <div className="grid grid-cols-3 gap-1.5">
+        <div className="grid grid-cols-5 gap-1.5">
           {["📞", "📷", "💬", "🕐", "🗺️", "📅", "🎵", "🎮", "🛍️", "▶️"].map((e, idx) => (
             <motion.div
               key={idx}
@@ -176,8 +176,8 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: idx * 0.04, type: "spring", stiffness: 260, damping: 20 }}
             >
-              <BeveledIcon className="p-1.5">
-                <span className="text-4xl select-none">{e}</span>
+              <BeveledIcon className="p-1">
+                <span className="text-2xl select-none">{e}</span>
               </BeveledIcon>
             </motion.div>
           ))}
@@ -350,11 +350,11 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
 
   "body-apps-overview": () => (
     <SceneWrapper bg="bg-primary-light/25">
-      <div className="relative flex flex-col items-center gap-4">
+      <div className="flex flex-col items-center gap-3">
         <motion.div {...floatVariant}>
-          <img src="/images/body-outline.png" alt="Body" className="h-36 w-auto drop-shadow-lg sm:h-44" />
+          <img src="/images/body-outline.png" alt="Body" className="h-32 w-auto drop-shadow-lg" />
         </motion.div>
-        <div className="flex flex-wrap justify-center gap-3">
+        <div className="grid grid-cols-3 gap-2">
           {["🧠", "❤️", "🫁", "stomach", "🦴", "💪"].map((e, i) => (
             <motion.div
               key={i}
@@ -362,11 +362,11 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.12 * i, type: "spring", stiffness: 260, damping: 18 }}
             >
-              <BeveledIcon className="p-2">
+              <BeveledIcon className="p-1.5">
                 {e === "stomach" ? (
-                  <img src="/images/stomach.png" alt="Stomach" className="h-10 w-10 object-contain" />
+                  <img src="/images/stomach.png" alt="Stomach" className="h-9 w-9 object-contain" />
                 ) : (
-                  <span className="text-4xl select-none">{e}</span>
+                  <span className="text-3xl select-none">{e}</span>
                 )}
               </BeveledIcon>
             </motion.div>

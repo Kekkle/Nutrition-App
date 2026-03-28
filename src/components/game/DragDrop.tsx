@@ -147,7 +147,7 @@ function MysteryBoxDrop({
   return (
     <div
       ref={setNodeRef}
-      className={`flex w-32 flex-col items-center rounded-2xl border-[3px] p-3 transition-all duration-200 sm:w-40 ${
+      className={`flex w-32 flex-col items-center rounded-2xl border-[3px] p-3 transition-all duration-200 ${
         active
           ? "scale-105 border-primary bg-primary-light/30 shadow-[0_0_20px_rgba(108,92,231,0.4)]"
           : colorClass
@@ -156,7 +156,7 @@ function MysteryBoxDrop({
       <img
         src="/images/mystery-box.png"
         alt={label}
-        className="mb-1 h-24 w-24 object-contain drop-shadow-lg sm:h-28 sm:w-28"
+        className="mb-1 h-24 w-24 object-contain drop-shadow-lg"
         style={{ filter: BOX_FILTERS[id] ?? "" }}
       />
       <span className={`font-display text-sm font-bold ${labelColor}`}>{label}</span>
@@ -186,11 +186,11 @@ function ScatteredCard({ item, isDragging, offset }: { item: GameItem; isDraggin
       exit={{ scale: 0, opacity: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <div className={`flex cursor-grab items-center justify-center p-2 ${beveledBox} active:cursor-grabbing`}>
+      <div className={`flex cursor-grab items-center justify-center p-1.5 ${beveledBox} active:cursor-grabbing`}>
         {item.icon.endsWith(".png") ? (
-          <img src={`/images/${item.icon}`} alt={item.label} className="h-11 w-11 object-contain" />
+          <img src={`/images/${item.icon}`} alt={item.label} className="h-9 w-9 object-contain" />
         ) : (
-          <span className="text-5xl leading-none select-none" aria-hidden>{item.icon}</span>
+          <span className="text-4xl leading-none select-none" aria-hidden>{item.icon}</span>
         )}
       </div>
     </motion.div>
@@ -206,15 +206,15 @@ function hashStr(s: string): number {
 function getScatterOffset(id: string) {
   const h = Math.abs(hashStr(id));
   return {
-    rotate: ((h % 35) - 17),
-    mx: ((h >> 4) % 18) - 9,
-    my: ((h >> 8) % 14) - 7,
+    rotate: ((h % 25) - 12),
+    mx: ((h >> 4) % 10) - 5,
+    my: ((h >> 8) % 8) - 4,
   };
 }
 
 const BODY_ZONE_POSITIONS: Record<string, { top: string; left: string }> = {
-  head:       { top: "10%",  left: "52%" },
-  chest:      { top: "38%",  left: "52%" },
+  head:       { top: "14%",  left: "50%" },
+  chest:      { top: "38%",  left: "50%" },
   "left-arm": { top: "35%",  left: "8%" },
   "right-arm":{ top: "35%",  left: "95%" },
   "left-leg": { top: "78%",  left: "35%" },
@@ -224,12 +224,14 @@ const BODY_ZONE_POSITIONS: Record<string, { top: string; left: string }> = {
 function BodyDropZone({
   id,
   isHighlighted,
+  wide,
   children,
 }: {
   id: string;
   label: string;
   icon: string;
   isHighlighted: boolean;
+  wide?: boolean;
   children: ReactNode;
 }) {
   const { isOver, setNodeRef } = useDroppable({ id });
@@ -244,7 +246,7 @@ function BodyDropZone({
       style={{ top: pos.top, left: pos.left }}
     >
       <div
-        className={`flex min-h-[48px] min-w-[48px] flex-col items-center justify-center rounded-2xl border-[3px] border-dashed p-1.5 transition-all duration-200 ${
+        className={`flex ${wide ? "grid grid-cols-2 gap-1 min-h-[96px] min-w-[96px]" : "min-h-[48px] min-w-[48px] flex-col"} items-center justify-center rounded-2xl border-[3px] border-dashed p-1.5 transition-all duration-200 ${
           active
             ? "border-primary bg-primary-light/40 shadow-[0_0_16px_rgba(108,92,231,0.4)] scale-110"
             : hasContent
@@ -412,14 +414,14 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
         </h2>
 
         {layout === "side-by-side" && (
-          <div className="flex flex-1 flex-col items-center gap-2 sm:flex-row sm:items-start sm:justify-center sm:gap-3">
-            <div className="relative flex w-72 shrink-0 flex-col items-center sm:w-80">
+          <div className="flex flex-1 flex-col items-center gap-2">
+            <div className="relative flex w-72 shrink-0 flex-col items-center">
               <img
                 src="/images/celly-character.png"
                 alt="Celly"
                 className="w-full drop-shadow-lg"
               />
-              <div className="absolute inset-x-0 top-[13%] bottom-[16%] flex rotate-[4deg] flex-col items-stretch justify-center gap-1.5 px-16 pl-[3.25rem] sm:px-20 sm:pl-[4rem]">
+              <div className="absolute inset-x-0 top-[13%] bottom-[16%] flex rotate-[4deg] flex-col items-stretch justify-center gap-1.5 px-16 pl-[3.25rem]">
                 {config.targets.map((target) => {
                   const placedHere = config.items.filter((it) => placements[it.id] === target.id);
                   return (
@@ -449,8 +451,8 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
         )}
 
         {layout === "body-map" && (
-          <div className="flex flex-1 flex-col gap-4 lg:flex-row lg:items-start">
-            <div className="relative mx-auto aspect-[1/1.4] w-60 shrink-0 sm:w-72">
+          <div className="flex flex-1 flex-col gap-3">
+            <div className="relative mx-auto aspect-[1/1.4] w-64 shrink-0">
               <img src="/images/body-outline.png" alt="Body outline" className="h-full w-full object-contain opacity-50" />
               {config.targets.map((target) => {
                 const placedHere = config.items.filter((it) => placements[it.id] === target.id);
@@ -461,6 +463,7 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
                     label={target.label}
                     icon={target.icon}
                     isHighlighted={overTargetId === target.id}
+                    wide={target.id === "chest"}
                   >
                     {placedHere.length > 0
                       ? placedHere.map((it) => <PlacedChip key={it.id} item={it} />)
@@ -469,11 +472,28 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
                 );
               })}
             </div>
-            <div className="mt-2 lg:mt-0 lg:flex-1">
+            <div>
               <p className="mb-2 text-center font-body text-xs font-semibold text-text-muted">
                 Drag each part
               </p>
-              {poolSection}
+              <motion.div
+                animate={shakePool ? { x: [0, -5, 5, -4, 4, 0] } : { x: 0 }}
+                transition={{ duration: 0.45, ease: "easeInOut" }}
+                className="mx-auto flex w-fit flex-col items-center gap-1.5"
+              >
+                <div className="grid grid-cols-4 gap-1.5">
+                  {poolItems.slice(0, 4).map((item) => (
+                    <AppStyleCard key={item.id} item={item} isDragging={activeId === item.id} />
+                  ))}
+                </div>
+                {poolItems.length > 4 && (
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {poolItems.slice(4).map((item) => (
+                      <AppStyleCard key={item.id} item={item} isDragging={activeId === item.id} />
+                    ))}
+                  </div>
+                )}
+              </motion.div>
             </div>
           </div>
         )}
@@ -502,7 +522,7 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
               <motion.div
                 animate={shakePool ? { x: [0, -5, 5, -4, 4, 0] } : { x: 0 }}
                 transition={{ duration: 0.45, ease: "easeInOut" }}
-                className="flex flex-1 flex-wrap content-start items-start justify-center gap-x-12 gap-y-8 px-4"
+                className="mx-auto grid grid-cols-5 gap-2 px-2"
               >
                 <AnimatePresence>
                   {poolItems.map((item) => (
@@ -510,12 +530,12 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
                       key={item.id}
                       item={item}
                       isDragging={activeId === item.id}
-                      offset={getScatterOffset(item.id)}
+                      offset={{ rotate: 0, mx: 0, my: 0 }}
                     />
                   ))}
                 </AnimatePresence>
               </motion.div>
-              <div className="flex items-end justify-center gap-3 -mt-4">
+              <div className="flex items-end justify-center gap-3 mt-10">
                 {config.targets.map((target) => {
                   const placedHere = config.items.filter((it) => placements[it.id] === target.id);
                   return (
