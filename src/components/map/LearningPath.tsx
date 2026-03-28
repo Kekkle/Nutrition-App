@@ -129,9 +129,20 @@ export default function LearningPath() {
 
   useEffect(() => {
     if (!loaded || !currentRef.current) return;
+    const el = currentRef.current;
+    const scrollContainer = el.closest("main");
+    if (!scrollContainer) return;
+
     const t = window.setTimeout(() => {
-      currentRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 120);
+      const elRect = el.getBoundingClientRect();
+      const containerRect = scrollContainer.getBoundingClientRect();
+      const offset = elRect.top - containerRect.top + scrollContainer.scrollTop;
+      const margin = scrollContainer.clientHeight - 160;
+      scrollContainer.scrollTo({
+        top: Math.max(0, offset - margin),
+        behavior: "smooth",
+      });
+    }, 150);
     return () => window.clearTimeout(t);
   }, [loaded, currentNodeId]);
 
@@ -279,6 +290,7 @@ export default function LearningPath() {
                         style={{
                           filter: locked ? "grayscale(1) opacity(0.5)" : "none",
                           flexDirection: pos.side === "right" ? "row" : "row-reverse",
+                          scrollMarginTop: "6rem",
                         }}
                       >
                         {/* Pin pointer — tip at road center */}
