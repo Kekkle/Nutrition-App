@@ -253,6 +253,26 @@ export const MODULES: Module[] = [
             text: "There are three main food groups that your body needs in large amounts.",
             illustration: "mystery-boxes-clickable",
           },
+          {
+            id: "m1-n5-p3",
+            text: "Carbohydrates are mostly found in plant foods.\nThis includes foods like fruits, vegetables, and grains such as rice and wheat.\nFoods made from wheat—like bread, pasta, and cereals—are also carbohydrates.",
+            illustration: "what-are-carbs",
+          },
+          {
+            id: "m1-n5-p4",
+            text: "Protein is found in animal foods like chicken, fish, eggs, and dairy.",
+            illustration: "what-is-protein",
+          },
+          {
+            id: "m1-n5-p5",
+            text: "Fats are found in foods that contain oils, like olive oil, butter, nuts, seeds, and avocados.",
+            illustration: "what-are-fats",
+          },
+          {
+            id: "m1-n5-p6",
+            text: "Here's a simple way to think about it.",
+            illustration: "macros-summary",
+          },
         ],
         game: {
           type: "drag-drop",

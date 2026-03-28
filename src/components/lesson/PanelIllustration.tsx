@@ -650,6 +650,95 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
       </div>
     </SceneWrapper>
   ),
+
+  "what-are-carbs": () => (
+    <SceneWrapper bg="bg-carb/10">
+      <p className="font-display text-lg text-carb">Carbohydrates</p>
+      <div className="grid grid-cols-5 gap-2">
+        {["🥦", "🍎", "🍞", "🍚", "🍝"].map((e, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.04, type: "spring", stiffness: 260, damping: 20 }}
+          >
+            <BeveledIcon className="p-1">
+              <span className="text-2xl select-none">{e}</span>
+            </BeveledIcon>
+          </motion.div>
+        ))}
+      </div>
+    </SceneWrapper>
+  ),
+
+  "what-is-protein": () => (
+    <SceneWrapper bg="bg-protein/10">
+      <p className="font-display text-lg text-protein">Protein</p>
+      <div className="grid grid-cols-5 gap-2">
+        {["🍗", "🥛", "🥩", "🥚", "🐟"].map((e, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.04, type: "spring", stiffness: 260, damping: 20 }}
+          >
+            <BeveledIcon className="p-1">
+              <span className="text-2xl select-none">{e}</span>
+            </BeveledIcon>
+          </motion.div>
+        ))}
+      </div>
+    </SceneWrapper>
+  ),
+
+  "macros-summary": () => (
+    <SceneWrapper bg="bg-primary-light/20">
+      <div className="flex flex-col gap-4">
+        {[
+          { emoji: "🌱", label: "Plants → mostly carbs", color: "text-carb" },
+          { emoji: "🐄", label: "Animals → mostly protein", color: "text-protein" },
+          { emoji: "🧈", label: "Oils → fats", color: "text-fat" },
+        ].map((row, i) => (
+          <motion.div
+            key={row.label}
+            className="flex items-center gap-3"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: i * 0.15, type: "spring", stiffness: 200, damping: 18 }}
+          >
+            <BeveledIcon className="p-1.5">
+              <span className="text-3xl select-none">{row.emoji}</span>
+            </BeveledIcon>
+            <span className={`font-display text-base ${row.color}`}>{row.label}</span>
+          </motion.div>
+        ))}
+      </div>
+    </SceneWrapper>
+  ),
+
+  "what-are-fats": () => (
+    <SceneWrapper bg="bg-fat/10">
+      <p className="font-display text-lg text-fat">Fats</p>
+      <div className="grid grid-cols-5 gap-2">
+        {["🫒", "🧈", "🥜", "🥑", "foods/olive-oil.png"].map((e, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.04, type: "spring", stiffness: 260, damping: 20 }}
+          >
+            <BeveledIcon className="p-1">
+              {e.endsWith(".png") ? (
+                <img src={`/images/${e}`} alt="Olive oil" className="h-7 w-7 object-contain" />
+              ) : (
+                <span className="text-2xl select-none">{e}</span>
+              )}
+            </BeveledIcon>
+          </motion.div>
+        ))}
+      </div>
+    </SceneWrapper>
+  ),
 };
 
 export default function PanelIllustration({ name }: { name: string }) {
