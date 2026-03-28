@@ -227,7 +227,7 @@ export const MODULES: Module[] = [
           startPos: { x: 9, y: 7 },
           goodItems: ["🍎", "🥦", "🍞", "💧", "🛏️", "🍗", "🍉", "🥕", "🧃", "😴", "🥛", "🍌"],
           badItems: ["🔋", "📶", "🔌", "⚡", "📱"],
-          totalSpawns: 22,
+          totalSpawns: 30,
           obstacles: [
             { x: 4, y: 3, w: 1, h: 4 },
             { x: 9, y: 1, w: 1, h: 3 },

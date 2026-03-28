@@ -124,7 +124,7 @@ export default function SnakeCollect({ config, onComplete }: Props) {
         if (hitItem.good) {
           setCollected((c) => {
             const newC = c + 1;
-            if (newC >= 5) setWon(true);
+            if (newC >= 10) setWon(true);
             return newC;
           });
           return [next, ...prev];
@@ -224,7 +224,7 @@ export default function SnakeCollect({ config, onComplete }: Props) {
     setSpeedLevel(-2);
   };
 
-  const goodTarget = 5;
+  const goodTarget = 10;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col items-center gap-2 px-4 pb-4">
