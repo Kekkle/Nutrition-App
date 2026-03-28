@@ -111,12 +111,14 @@ Instead of producing actual videos, each lesson is a sequence of **animated pane
 
 ## Game Engine Types
 
-Four reusable game components that render different content based on data config:
+Six reusable game components that render different content based on data config:
 
-- **Multiple Choice / Tap**: Tap the correct answer from options (used in Charge the Phone, Mystery Boxes, Spot the Carb, Find the Fat, Protein Hunt)
-- **Drag and Drop**: Drag items into target zones (used in Sort the Apps, Fill the Battery, Unlock the Cell, Build the Cell, Brain Boost, Feed Your Avatar)
+- **Multiple Choice / Tap**: Tap the correct answer from options (used in Spot the Carb, Find the Fat, Protein Hunt)
+- **Drag and Drop**: Drag items into target zones. Supports multiple layout variants: side-by-side (Celly phone), body-map (body outline), and mystery-boxes (colored boxes with counters). (Used in Sort the Apps, Build the Body, Big Stuff food sorting, Fill the Battery, Unlock the Cell, Build the Cell, Brain Boost, Feed Your Avatar)
 - **Sort / Categorize**: Drag items into two or more labeled lanes (used in Speed Sort, Team Power)
 - **Sequence / Order**: Arrange steps in the correct order (used in Digestion Journey, Build and Repair, Use It or Lose It, Pack the Storage)
+- **Snake**: Grid-based snake navigation game. The snake moves through a grid, collecting a target item while avoiding obstacles and its own tail. Supports both "reach the target" mode (Charge the Phone) and "collect items" mode where the snake grows by eating good items, shrinks from bad items, and speeds up over time (Charge the Body)
+- **Catcher**: Falling food catch game. Player selects a category (e.g., Carbs, Protein, or Fats), then moves a box left and right at the bottom of the screen to catch falling food items that belong to the selected category while avoiding wrong ones. Spawn rate increases over time. (Used in Catch the Food)
 
 ---
 
