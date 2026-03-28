@@ -37,6 +37,13 @@ export default function SnakeCollect({ config, onComplete }: Props) {
 
   const initialSnake: Pos[] = [startPos, { x: startPos.x - 1, y: startPos.y }];
 
+  const safeZone = useRef(new Set<string>());
+  if (safeZone.current.size === 0) {
+    for (let i = 1; i <= 4; i++) {
+      safeZone.current.add(`${startPos.x + i},${startPos.y}`);
+    }
+  }
+
   const [snake, setSnake] = useState<Pos[]>(initialSnake);
   const [dir, setDir] = useState<Dir>("right");
   const [gameOver, setGameOver] = useState(false);
@@ -58,12 +65,18 @@ export default function SnakeCollect({ config, onComplete }: Props) {
   const spawnItem = useCallback(() => {
     if (spawnCount >= totalSpawns) return;
     const allPositions = snake.concat(items.map((i) => i.pos));
+    const checkSafe = spawnCount < 5;
     let pos: Pos;
     let attempts = 0;
     do {
       pos = { x: Math.floor(Math.random() * gridWidth), y: Math.floor(Math.random() * gridHeight) };
       attempts++;
-    } while ((allPositions.some((p) => posEq(p, pos)) || obstacleSet.current.has(`${pos.x},${pos.y}`)) && attempts < 50);
+    } while (
+      (allPositions.some((p) => posEq(p, pos)) ||
+        obstacleSet.current.has(`${pos.x},${pos.y}`) ||
+        (checkSafe && safeZone.current.has(`${pos.x},${pos.y}`))) &&
+      attempts < 50
+    );
 
     const hasGoodOnScreen = items.some((i) => i.good);
     const isGood = !hasGoodOnScreen || Math.random() < 0.6;

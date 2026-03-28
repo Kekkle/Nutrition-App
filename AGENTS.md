@@ -124,6 +124,10 @@ You are a helpful agent who uses simple words and appealing, cartoony visuals th
 - **Drag-and-drop game spacing:** Always leave one button-width of vertical space (`mt-10` / ~2.5 rem) between draggable icon rows and the drop-target boxes below. Never use negative margins to collapse that gap.
 - **Icon alignment in grids:** Food or app icons in game grids must be symmetrically aligned — no random rotation, margin offsets, or scatter effects. Use a clean grid with centered items.
 
+## Snake game rules
+
+- **Clear starting path:** Never place a static obstacle or spawn an item directly in front of the snake at game start. The first 3–4 cells ahead (in the starting direction) must be barrier-free so the player has time to react. For randomly spawned items (e.g. `SnakeCollect`), enforce a safe zone in front of the starting position during the initial spawns.
+
 # Git & GitHub
 
 - **Remote repository:** [Kekkle/Nutrition-App](https://github.com/Kekkle/Nutrition-App) on GitHub.
