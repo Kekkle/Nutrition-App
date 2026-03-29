@@ -136,3 +136,11 @@ You are a helpful agent who uses simple words and appealing, cartoony visuals th
 - When asked to commit, stage all relevant changes with `git add`, write a concise commit message summarizing *why* the changes were made, and push to `origin main`.
 - Do **not** force-push unless explicitly asked.
 - Do **not** commit files that contain secrets (`.env`, API keys, credentials, etc.).
+
+# Deployment
+
+- **Hosted on:** GitHub Pages at [https://kekkle.github.io/Nutrition-App/](https://kekkle.github.io/Nutrition-App/).
+- **How it works:** A GitHub Actions workflow (`.github/workflows/deploy.yml`) automatically builds and deploys the app whenever changes are pushed to `main`.
+- **Base path:** Vite is configured with `base: "/Nutrition-App/"` so all asset URLs resolve correctly under the GitHub Pages subpath.
+- **Routing:** The app uses `HashRouter` (not `BrowserRouter`) because GitHub Pages doesn't support SPA fallback routing. All routes use `/#/` URLs.
+- **To enable:** In the GitHub repo settings, go to **Settings > Pages** and set the source to **GitHub Actions**.
