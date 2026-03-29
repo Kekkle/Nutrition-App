@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { CatcherConfig } from "../../types";
+import { asset } from "../../utils/asset";
 
 export interface CatcherGameProps {
   config: CatcherConfig;
@@ -234,7 +235,7 @@ export default function CatcherGame({ config, onComplete }: CatcherGameProps) {
               }`}
             >
               <img
-                src="/images/mystery-box.png"
+                src={asset("/images/mystery-box.png")}
                 alt={cat.label}
                 className="h-24 w-24 object-contain drop-shadow-lg sm:h-28 sm:w-28"
                 style={{ filter: BOX_FILTERS[cat.id] ?? "" }}
@@ -308,7 +309,7 @@ export default function CatcherGame({ config, onComplete }: CatcherGameProps) {
             className="flex flex-col items-center"
           >
             <img
-              src="/images/mystery-box.png"
+              src={asset("/images/mystery-box.png")}
               alt={activeCat?.label ?? "Box"}
               className="h-16 w-16 object-contain drop-shadow-xl sm:h-20 sm:w-20"
               style={{ filter: BOX_FILTERS[selectedCategory] ?? "" }}

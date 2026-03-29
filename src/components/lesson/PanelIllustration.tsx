@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, type ReactNode } from "react";
+import { asset } from "../../utils/asset";
 
 const floatVariant = {
   animate: {
@@ -119,7 +120,7 @@ function MysteryBoxesInteractive() {
                     style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(0deg)" }}
                   >
                     <img
-                      src="/images/mystery-box.png"
+                      src={asset("/images/mystery-box.png")}
                       alt="Mystery box"
                       className="h-full w-full object-contain drop-shadow-lg"
                       style={{ filter: box.filter }}
@@ -166,7 +167,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
     <SceneWrapper bg="bg-primary-light/40">
       <div className="flex w-full flex-col items-center gap-3">
         <motion.div {...floatVariant}>
-          <img src="/images/celly-character.png" alt="Celly" className="h-28 w-auto drop-shadow-lg" />
+          <img src={asset("/images/celly-character.png")} alt="Celly" className="h-28 w-auto drop-shadow-lg" />
         </motion.div>
         <div className="grid grid-cols-5 gap-1.5">
           {["📞", "📷", "💬", "🕐", "🗺️", "📅", "🎵", "🎮", "🛍️", "▶️"].map((e, idx) => (
@@ -248,7 +249,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
       <div className="flex w-full max-w-md items-center justify-center">
         <div className="flex flex-1 justify-end">
           <motion.div {...floatVariant}>
-            <img src="/images/celly-character.png" alt="Celly" className="h-32 w-auto drop-shadow-lg sm:h-40" />
+            <img src={asset("/images/celly-character.png")} alt="Celly" className="h-32 w-auto drop-shadow-lg sm:h-40" />
           </motion.div>
         </div>
         <motion.span
@@ -260,7 +261,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
         </motion.span>
         <div className="flex flex-1 justify-start">
           <motion.div {...floatVariant}>
-            <img src="/images/body-outline.png" alt="Body" className="h-32 w-auto drop-shadow-lg sm:h-40" />
+            <img src={asset("/images/body-outline.png")} alt="Body" className="h-32 w-auto drop-shadow-lg sm:h-40" />
           </motion.div>
         </div>
       </div>
@@ -271,7 +272,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
     <SceneWrapper bg="bg-error/10">
       <motion.div {...pulseVariant}>
         <img
-          src="/images/celly-character.png"
+          src={asset("/images/celly-character.png")}
           alt="Celly uncharged"
           className="h-40 w-auto drop-shadow-lg grayscale sm:h-48"
         />
@@ -297,7 +298,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
       <div className="flex items-center gap-4">
         <motion.div {...floatVariant}>
           <img
-            src="/images/celly-character.png"
+            src={asset("/images/celly-character.png")}
             alt="Celly"
             className="h-36 w-auto drop-shadow-lg grayscale-[50%] sm:h-44"
           />
@@ -307,7 +308,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
           transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" as const }}
         >
           <img
-            src="/images/charger-character.png"
+            src={asset("/images/charger-character.png")}
             alt="Charger"
             className="h-28 w-auto drop-shadow-lg sm:h-36"
           />
@@ -332,7 +333,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
     <SceneWrapper bg="bg-success/20">
       <motion.div {...pulseVariant}>
         <img
-          src="/images/celly-character.png"
+          src={asset("/images/celly-character.png")}
           alt="Celly fully charged"
           className="h-40 w-auto drop-shadow-lg sm:h-48"
         />
@@ -352,7 +353,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
     <SceneWrapper bg="bg-primary-light/25">
       <div className="flex flex-col items-center gap-3">
         <motion.div {...floatVariant}>
-          <img src="/images/body-outline.png" alt="Body" className="h-32 w-auto drop-shadow-lg" />
+          <img src={asset("/images/body-outline.png")} alt="Body" className="h-32 w-auto drop-shadow-lg" />
         </motion.div>
         <div className="grid grid-cols-3 gap-2">
           {["🧠", "❤️", "🫁", "stomach", "🦴", "💪"].map((e, i) => (
@@ -364,7 +365,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
             >
               <BeveledIcon className="p-1.5">
                 {e === "stomach" ? (
-                  <img src="/images/stomach.png" alt="Stomach" className="h-9 w-9 object-contain" />
+                  <img src={asset("/images/stomach.png")} alt="Stomach" className="h-9 w-9 object-contain" />
                 ) : (
                   <span className="text-3xl select-none">{e}</span>
                 )}
@@ -429,7 +430,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
         transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" as const }}
       >
         <BeveledIcon className="p-3">
-          <img src="/images/stomach.png" alt="Stomach" className="h-28 w-28 object-contain sm:h-36 sm:w-36" />
+          <img src={asset("/images/stomach.png")} alt="Stomach" className="h-28 w-28 object-contain sm:h-36 sm:w-36" />
         </BeveledIcon>
       </motion.div>
     </SceneWrapper>
@@ -481,7 +482,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
                 animate={{ scale: [1, 1.06, 1] }}
                 transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" as const }}
               >
-                <img src="/images/body-energized.png" alt="Body energized" className="h-28 w-auto sm:h-32" />
+                <img src={asset("/images/body-energized.png")} alt="Body energized" className="h-28 w-auto sm:h-32" />
               </motion.div>
             </motion.div>
           </div>
@@ -507,7 +508,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
               >
                 <BeveledIcon className="p-1.5">
                   {item === "stomach" ? (
-                    <img src="/images/stomach.png" alt="Stomach" className="h-8 w-8 object-contain sm:h-9 sm:w-9" />
+                    <img src={asset("/images/stomach.png")} alt="Stomach" className="h-8 w-8 object-contain sm:h-9 sm:w-9" />
                   ) : (
                     <span className="text-3xl select-none sm:text-4xl">{item}</span>
                   )}
@@ -524,7 +525,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
     <SceneWrapper bg="bg-primary-light/20">
       <div className="flex flex-col items-center gap-4">
         <motion.div {...floatVariant}>
-          <img src="/images/figure-standing.png" alt="Body" className="h-32 w-auto drop-shadow-lg sm:h-40" />
+          <img src={asset("/images/figure-standing.png")} alt="Body" className="h-32 w-auto drop-shadow-lg sm:h-40" />
         </motion.div>
         <div className="flex gap-4">
           {[
@@ -729,7 +730,7 @@ const ILLUSTRATIONS: Record<string, () => ReactNode> = {
           >
             <BeveledIcon className="p-1">
               {e.endsWith(".png") ? (
-                <img src={`/images/${e}`} alt="Olive oil" className="h-7 w-7 object-contain" />
+                <img src={asset(`/images/${e}`)} alt="Olive oil" className="h-7 w-7 object-contain" />
               ) : (
                 <span className="text-2xl select-none">{e}</span>
               )}

@@ -3,15 +3,16 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { MODULES } from "../../content/modules";
 import { useProgressStore } from "../../stores/progressStore";
+import { asset } from "../../utils/asset";
 import type { Module, UserProgress } from "../../types";
 
 const NODE_IMAGES: Record<string, string> = {
-  "m1-n1": "/images/celly-character.png",
-  "m1-n2": "/images/charger-character.png",
-  "m1-n3": "/images/body-outline.png",
-  "m1-n4": "/images/banana-sunglasses.png",
-  "m1-n5": "/images/mystery-box.png",
-  "m1-n6": "/images/mystery-box.png",
+  "m1-n1": asset("/images/celly-character.png"),
+  "m1-n2": asset("/images/charger-character.png"),
+  "m1-n3": asset("/images/body-outline.png"),
+  "m1-n4": asset("/images/banana-sunglasses.png"),
+  "m1-n5": asset("/images/mystery-box.png"),
+  "m1-n6": asset("/images/mystery-box.png"),
 };
 
 const CHECKPOINT_COLORS = [
@@ -104,7 +105,7 @@ function ModuleHeader({ module }: { module: Module }) {
     >
       {isFirst ? (
         <img
-          src="/images/celly-character.png"
+          src={asset("/images/celly-character.png")}
           alt="Celly"
           className="absolute -left-3 -top-8 z-10 h-[5.5rem] w-[5.5rem] object-contain drop-shadow-xl"
         />

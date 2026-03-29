@@ -13,6 +13,7 @@ import {
 } from "@dnd-kit/core";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { asset } from "../../utils/asset";
 import type { DragDropConfig, GameItem } from "../../types";
 
 export interface DragDropProps {
@@ -39,7 +40,7 @@ function AppStyleCard({ item, isDragging }: { item: GameItem; isDragging: boolea
     >
       <div className={`flex cursor-grab items-center justify-center p-2 ${beveledBox} active:cursor-grabbing`}>
         {item.icon.endsWith(".png") ? (
-          <img src={`/images/${item.icon}`} alt={item.label} className="h-9 w-9 object-contain" />
+          <img src={asset(`/images/${item.icon}`)} alt={item.label} className="h-9 w-9 object-contain" />
         ) : (
           <span className="text-4xl leading-none select-none" aria-hidden>{item.icon}</span>
         )}
@@ -50,7 +51,7 @@ function AppStyleCard({ item, isDragging }: { item: GameItem; isDragging: boolea
 
 function ItemIcon({ icon, label, size = "text-3xl", imgClass = "h-8 w-8" }: { icon: string; label: string; size?: string; imgClass?: string }) {
   if (icon.endsWith(".png")) {
-    return <img src={`/images/${icon}`} alt={label} className={`${imgClass} object-contain`} />;
+    return <img src={asset(`/images/${icon}`)} alt={label} className={`${imgClass} object-contain`} />;
   }
   return <span className={`${size} leading-none select-none`} aria-hidden>{icon}</span>;
 }
@@ -154,7 +155,7 @@ function MysteryBoxDrop({
       }`}
     >
       <img
-        src="/images/mystery-box.png"
+        src={asset("/images/mystery-box.png")}
         alt={label}
         className="mb-1 h-24 w-24 object-contain drop-shadow-lg"
         style={{ filter: BOX_FILTERS[id] ?? "" }}
@@ -188,7 +189,7 @@ function ScatteredCard({ item, isDragging, offset }: { item: GameItem; isDraggin
     >
       <div className={`flex cursor-grab items-center justify-center p-1.5 ${beveledBox} active:cursor-grabbing`}>
         {item.icon.endsWith(".png") ? (
-          <img src={`/images/${item.icon}`} alt={item.label} className="h-9 w-9 object-contain" />
+          <img src={asset(`/images/${item.icon}`)} alt={item.label} className="h-9 w-9 object-contain" />
         ) : (
           <span className="text-4xl leading-none select-none" aria-hidden>{item.icon}</span>
         )}
@@ -409,7 +410,7 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
           <div className="flex flex-1 flex-col items-center gap-2">
             <div className="relative flex w-72 shrink-0 flex-col items-center">
               <img
-                src="/images/celly-character.png"
+                src={asset("/images/celly-character.png")}
                 alt="Celly"
                 className="w-full drop-shadow-lg"
               />
@@ -445,7 +446,7 @@ export default function DragDrop({ config, onComplete }: DragDropProps) {
         {layout === "body-map" && (
           <div className="flex flex-1 flex-col gap-3">
             <div className="relative mx-auto aspect-[1/1.4] w-64 shrink-0">
-              <img src="/images/body-outline.png" alt="Body outline" className="h-full w-full object-contain opacity-50" />
+              <img src={asset("/images/body-outline.png")} alt="Body outline" className="h-full w-full object-contain opacity-50" />
               {config.targets.map((target) => {
                 const placedHere = config.items.filter((it) => placements[it.id] === target.id);
                 return (
