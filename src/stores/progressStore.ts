@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { UserProgress } from "../types";
+import { MODULES } from "../content/modules";
 import { loadProgress, saveProgress } from "../utils/storage";
 
 const DEFAULT_PROGRESS: UserProgress = {
@@ -33,10 +34,18 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
     const bestStars = existing ? Math.max(existing.stars, stars) : stars;
     const xpGain = existing ? 0 : stars * 10;
 
+    let nextIndex = prev.currentNodeIndex + (existing ? 0 : 1);
+
+    const mod = MODULES.find((m) => m.id === prev.currentModuleId);
+    if (mod) {
+      const visible = mod.nodes.filter((n) => !n.hidden);
+      if (nextIndex >= visible.length) nextIndex = visible.length;
+    }
+
     const updated: UserProgress = {
       ...prev,
       xp: prev.xp + xpGain,
-      currentNodeIndex: prev.currentNodeIndex + (existing ? 0 : 1),
+      currentNodeIndex: nextIndex,
       nodes: {
         ...prev.nodes,
         [nodeId]: { stars: bestStars, completed: true },

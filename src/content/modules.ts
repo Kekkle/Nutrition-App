@@ -326,6 +326,7 @@ export const MODULES: Module[] = [
       {
         id: "m1-n6",
         title: "Catch the food!",
+        hidden: true,
         panels: [
           {
             id: "m1-n6-p1",

@@ -103,6 +103,7 @@ export interface LessonNode {
   panels: LessonPanel[];
   game: GameConfig;
   funFact: string;
+  hidden?: boolean;
 }
 
 export interface Module {

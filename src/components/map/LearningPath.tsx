@@ -65,7 +65,8 @@ function buildRoadPath(count: number) {
 function getCurrentNodeId(progress: UserProgress): string | null {
   const mod = MODULES.find((m) => m.id === progress.currentModuleId);
   if (!mod) return null;
-  return mod.nodes[progress.currentNodeIndex]?.id ?? null;
+  const visible = mod.nodes.filter((n) => !n.hidden);
+  return visible[progress.currentNodeIndex]?.id ?? null;
 }
 
 function nodeStatus(
@@ -163,7 +164,7 @@ export default function LearningPath() {
         </motion.header>
 
         {MODULES.map((module, moduleIndex) => {
-          const nodes = module.nodes;
+          const nodes = module.nodes.filter((n) => !n.hidden);
 
           if (nodes.length === 0) {
             return (
