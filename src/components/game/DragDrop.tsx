@@ -197,20 +197,6 @@ function ScatteredCard({ item, isDragging, offset }: { item: GameItem; isDraggin
   );
 }
 
-function hashStr(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
-  return h;
-}
-
-function getScatterOffset(id: string) {
-  const h = Math.abs(hashStr(id));
-  return {
-    rotate: ((h % 25) - 12),
-    mx: ((h >> 4) % 10) - 5,
-    my: ((h >> 8) % 8) - 4,
-  };
-}
 
 const BODY_ZONE_POSITIONS: Record<string, { top: string; left: string }> = {
   head:       { top: "20%",  left: "50%" },
