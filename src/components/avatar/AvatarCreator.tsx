@@ -30,15 +30,20 @@ function miniConfig(overrides: Partial<AvatarConfig> & Pick<AvatarConfig, "shape
 const ringSelected = "ring-4 ring-primary ring-offset-2 ring-offset-white scale-[1.02]";
 const ringIdle = "ring-2 ring-transparent hover:ring-text-muted/20";
 
-export default function AvatarCreator() {
+interface AvatarCreatorProps {
+  editMode?: boolean;
+}
+
+export default function AvatarCreator({ editMode = false }: AvatarCreatorProps) {
   const navigate = useNavigate();
   const setAvatar = useAvatarStore((s) => s.setAvatar);
+  const currentAvatar = useAvatarStore((s) => s.avatar);
 
-  const [name, setName] = useState("");
-  const [shape, setShape] = useState(0);
-  const [color, setColor] = useState<string>(PRESET_COLORS[0]);
-  const [eyeStyle, setEyeStyle] = useState(0);
-  const [accessory, setAccessory] = useState(0);
+  const [name, setName] = useState(editMode && currentAvatar ? currentAvatar.name : "");
+  const [shape, setShape] = useState(editMode && currentAvatar ? currentAvatar.shape : 0);
+  const [color, setColor] = useState<string>(editMode && currentAvatar ? currentAvatar.color : PRESET_COLORS[0]);
+  const [eyeStyle, setEyeStyle] = useState(editMode && currentAvatar ? currentAvatar.eyeStyle : 0);
+  const [accessory, setAccessory] = useState(editMode && currentAvatar ? currentAvatar.accessory : 0);
   const [saving, setSaving] = useState(false);
 
   const previewConfig: AvatarConfig = useMemo(
@@ -65,21 +70,33 @@ export default function AvatarCreator() {
         eyeStyle,
         accessory,
       });
-      navigate("/");
+      navigate(editMode ? "/profile" : "/");
     } finally {
       setSaving(false);
     }
   }
 
   return (
-    <div className="flex min-h-full flex-col bg-surface text-text">
+    <div className="relative flex min-h-full flex-col bg-surface text-text">
+      {editMode && (
+        <button
+          type="button"
+          onClick={() => navigate("/profile")}
+          className="absolute left-4 top-4 z-10 flex items-center gap-1 rounded-full bg-surface-raised/80 px-3 py-1.5 font-body text-sm font-semibold text-text shadow-sm backdrop-blur-sm transition hover:bg-surface-raised"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path d="M15 19l-7-7 7-7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          Back
+        </button>
+      )}
       <div
         className="pointer-events-none shrink-0 h-36 bg-gradient-to-b from-primary-light/45 via-secondary/20 to-transparent"
         aria-hidden
       />
       <div className="flex flex-1 flex-col px-5 pb-8 -mt-16 min-h-0">
         <h1 className="font-display text-center text-3xl text-text tracking-tight px-2">
-          Create your buddy!
+          {editMode ? "Edit your buddy!" : "Create your buddy!"}
         </h1>
 
         <div className="flex shrink-0 justify-center py-6">
@@ -204,7 +221,7 @@ export default function AvatarCreator() {
           onClick={handleSubmit}
           className="font-body mt-2 w-full shrink-0 rounded-2xl bg-primary py-4 text-lg font-bold text-white shadow-md transition enabled:active:brightness-95 disabled:cursor-not-allowed disabled:opacity-45"
         >
-          {saving ? "Saving…" : "Let's go!"}
+          {saving ? "Saving…" : editMode ? "Save changes" : "Let's go!"}
         </motion.button>
       </div>
     </div>
