@@ -77,7 +77,7 @@ export default function AvatarCreator({ editMode = false }: AvatarCreatorProps) 
   }
 
   return (
-    <div className="relative flex min-h-full flex-col bg-surface text-text">
+    <div className="relative flex h-full flex-col bg-surface text-text">
       {editMode && (
         <button
           type="button"

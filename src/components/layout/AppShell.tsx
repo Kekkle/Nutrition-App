@@ -61,7 +61,7 @@ export default function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-surface">
-      <main className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden [touch-action:pan-y] [-webkit-overflow-scrolling:touch]">
+      <main className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden [-webkit-overflow-scrolling:touch]">
         {children}
       </main>
       <nav
