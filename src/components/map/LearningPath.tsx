@@ -1,10 +1,12 @@
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, useAnimate } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { MODULES } from "../../content/modules";
 import { useProgressStore } from "../../stores/progressStore";
+import { useAvatarStore } from "../../stores/avatarStore";
 import { asset } from "../../utils/asset";
-import type { Module, UserProgress } from "../../types";
+import type { AvatarConfig, Module, UserProgress } from "../../types";
+import AvatarDisplay from "../avatar/AvatarDisplay";
 
 const NODE_IMAGES: Record<string, string> = {
   "m1-n1": asset("/images/celly-character.png"),
@@ -93,6 +95,140 @@ function StarDots({ count }: { count: number }) {
   );
 }
 
+const AVATAR_POS_KEY = "nutriphone-avatar-road-pos";
+
+function getLastAvatarPos(): number {
+  try {
+    const v = sessionStorage.getItem(AVATAR_POS_KEY);
+    return v !== null ? parseInt(v, 10) : -1;
+  } catch {
+    return -1;
+  }
+}
+
+function saveLastAvatarPos(idx: number) {
+  try {
+    sessionStorage.setItem(AVATAR_POS_KEY, String(idx));
+  } catch { /* noop */ }
+}
+
+function RoadAvatar({
+  avatar,
+  targetIdx,
+  totalH,
+  nodeCount,
+  bouncing,
+  onBounceComplete,
+  onTravelComplete,
+}: {
+  avatar: AvatarConfig;
+  targetIdx: number;
+  totalH: number;
+  nodeCount: number;
+  bouncing: boolean;
+  onBounceComplete: () => void;
+  onTravelComplete?: () => void;
+}) {
+  const clampedTarget = Math.min(Math.max(targetIdx, 0), nodeCount - 1);
+  const [scope, animate] = useAnimate<HTMLDivElement>();
+  const [displayIdx, setDisplayIdx] = useState(clampedTarget);
+  const displayIdxRef = useRef(clampedTarget);
+
+  useEffect(() => {
+    const from = displayIdxRef.current;
+    if (from === clampedTarget) {
+      saveLastAvatarPos(clampedTarget);
+      return;
+    }
+
+    let cancelled = false;
+
+    (async () => {
+      if (cancelled || !scope.current) return;
+
+      const direction = clampedTarget > from ? 1 : -1;
+      let current = from;
+
+      while (current !== clampedTarget && !cancelled) {
+        const next = current + direction;
+        const currentRP = roadPos(current);
+        const nextRP = roadPos(next);
+        const midRP = {
+          x: (currentRP.x + nextRP.x) / 2,
+          y: (currentRP.y + nextRP.y) / 2,
+        };
+        const midLeft = `${(midRP.x / VB_W) * 100}%`;
+        const midTop = `${(midRP.y / totalH) * 100}%`;
+        const nextLeft = `${(nextRP.x / VB_W) * 100}%`;
+        const nextTop = `${(nextRP.y / totalH) * 100}%`;
+
+        await animate(scope.current!, {
+          left: midLeft, top: midTop, y: [0, -45, 0],
+        }, { duration: 0.55, ease: "easeInOut" });
+        if (cancelled || !scope.current) break;
+
+        await new Promise((r) => setTimeout(r, 120));
+        if (cancelled || !scope.current) break;
+
+        await animate(scope.current!, {
+          left: nextLeft, top: nextTop, y: [0, -45, 0],
+        }, { duration: 0.55, ease: "easeInOut" });
+        if (cancelled || !scope.current) break;
+
+        current = next;
+        displayIdxRef.current = next;
+        setDisplayIdx(next);
+
+        if (current !== clampedTarget && !cancelled) {
+          await new Promise((r) => setTimeout(r, 100));
+        }
+      }
+
+      if (!cancelled) {
+        saveLastAvatarPos(clampedTarget);
+        onTravelComplete?.();
+      }
+    })();
+
+    return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clampedTarget]);
+
+  useEffect(() => {
+    if (!bouncing || !scope.current) return;
+    let cancelled = false;
+
+    animate(scope.current, { y: [0, -28, 0] }, {
+      duration: 0.45,
+      ease: "easeInOut",
+    }).then(() => {
+      if (!cancelled) onBounceComplete();
+    });
+
+    return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bouncing]);
+
+  if (nodeCount <= 0) return null;
+
+  const rp = roadPos(displayIdx);
+
+  return (
+    <motion.div
+      ref={scope}
+      className="absolute z-10 pointer-events-none"
+      style={{
+        left: `${(rp.x / VB_W) * 100}%`,
+        top: `${(rp.y / totalH) * 100}%`,
+      }}
+    >
+      <div style={{ transform: "translate(-50%, -100%)" }}>
+        <AvatarDisplay config={avatar} size={48} />
+      </div>
+    </motion.div>
+  );
+}
+
 function ModuleHeader({ module }: { module: Module }) {
   const isFirst = module.id === "module-1";
 
@@ -126,8 +262,37 @@ export default function LearningPath() {
   const navigate = useNavigate();
   const progress = useProgressStore((s) => s.progress);
   const loaded = useProgressStore((s) => s.loaded);
+  const avatar = useAvatarStore((s) => s.avatar);
   const currentRef = useRef<HTMLButtonElement | null>(null);
   const currentNodeId = getCurrentNodeId(progress);
+
+  const [bouncing, setBouncing] = useState(false);
+  const [clickedNodeIdx, setClickedNodeIdx] = useState<number | null>(null);
+  const pendingNavRef = useRef<string | null>(null);
+
+  const [initialAvatarPos] = useState(() => {
+    const stored = getLastAvatarPos();
+    return stored >= 0 ? stored : progress.currentNodeIndex;
+  });
+  const avatarTarget = clickedNodeIdx ?? initialAvatarPos;
+
+  const handleBounceComplete = useCallback(() => {
+    setBouncing(false);
+    if (pendingNavRef.current) {
+      const target = pendingNavRef.current;
+      pendingNavRef.current = null;
+      navigate(target);
+    }
+  }, [navigate]);
+
+  const handleTravelComplete = useCallback(() => {
+    setClickedNodeIdx(null);
+    if (pendingNavRef.current) {
+      const target = pendingNavRef.current;
+      pendingNavRef.current = null;
+      navigate(target);
+    }
+  }, [navigate]);
 
   useEffect(() => {
     if (!loaded || !currentRef.current) return;
@@ -182,6 +347,7 @@ export default function LearningPath() {
             );
           }
 
+          const isCurrentModule = module.id === progress.currentModuleId;
           const totalH = NODE_START_Y + (nodes.length - 1) * NODE_GAP + 90;
           const roadPath = buildRoadPath(nodes.length);
 
@@ -270,7 +436,17 @@ export default function LearningPath() {
                         type="button"
                         disabled={locked}
                         onClick={() => {
-                          if (!locked) navigate(`/lesson/${node.id}`);
+                          if (locked || bouncing || clickedNodeIdx !== null) return;
+                          pendingNavRef.current = `/lesson/${node.id}`;
+                          const avatarPos = Math.min(avatarTarget, nodes.length - 1);
+                          if (avatar && i === avatarPos) {
+                            setBouncing(true);
+                          } else if (avatar) {
+                            setClickedNodeIdx(i);
+                          } else {
+                            pendingNavRef.current = null;
+                            navigate(`/lesson/${node.id}`);
+                          }
                         }}
                         initial={{ opacity: 0, scale: 0.4 }}
                         animate={
@@ -352,6 +528,18 @@ export default function LearningPath() {
                     </div>
                   );
                 })}
+
+                {isCurrentModule && avatar && (
+                  <RoadAvatar
+                    avatar={avatar}
+                    targetIdx={avatarTarget}
+                    totalH={totalH}
+                    nodeCount={nodes.length}
+                    bouncing={bouncing}
+                    onBounceComplete={handleBounceComplete}
+                    onTravelComplete={handleTravelComplete}
+                  />
+                )}
               </div>
 
               {moduleIndex < MODULES.length - 1 && (
